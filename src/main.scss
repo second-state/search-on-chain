@@ -1,0 +1,148 @@
+html {
+  font-family: Arial, sans-serif;
+}
+
+header {
+  padding: 0 1rem !important;
+  border-bottom: 1px solid #f6f6f6;
+}
+
+h1 {
+  font-size: 1.6rem;
+  font-weight: bold;
+  // text-transform: uppercase;
+  letter-spacing: -2px;
+  width: 120px;
+  font-family: Arial Black;
+  line-height: 0.8;
+  margin: 1rem 0;
+  @media screen and (max-width: 911px) {
+    // margin-bottom: 0.5rem;
+  }
+}
+
+.entire-search {
+  background: #fff;
+  display: flex;
+  border: 1px solid #dfe1e5;
+  box-shadow: none;
+  height: 39px;
+  width: 638px;
+  border-radius: 24px;
+  z-index: 3;
+  height: 44px;
+  margin-right: auto;
+  box-sizing: content-box;
+
+  .search-input {
+    flex: 1;
+    display: flex;
+    padding: 5px 4px 0 16px;
+    padding-left: 20px;
+
+    .input-wrapper {
+      display: flex;
+      flex: 1;
+      flex-wrap: wrap;
+
+      .place-hold {
+        color: transparent;
+        flex: 100%;
+        white-space: pre;
+        line-height: 34px;
+        height: 34px !important;
+      }
+
+      input {
+        background-color: transparent;
+        border: none;
+        margin: 0;
+        padding: 0;
+        color: rgba(0,0,0,.87);
+        word-wrap: break-word;
+        outline: none;
+        display: flex;
+        flex: 100%;
+        -webkit-tap-highlight-color: transparent;
+        margin-top: -37px;
+        font: 16px arial,sans-serif;
+        line-height: 34px;
+        height: 34px !important;
+      }
+    }
+  }
+
+  .search-button {
+    border-radius: 0;
+    height: 44px;
+    width: 44px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    flex: 0 0 auto;
+    padding: 0;
+    padding-right: 13px;
+    font-size: 11px;
+    &:focus {
+      outline: none;
+    }
+
+    .button-figure {
+      background: none;
+      color: #6c4de0;
+      height: 24px;
+      width: 24px;
+      margin: auto;
+
+      .figure-wrapper {
+        display: inline-block;
+        fill: currentColor;
+        height: 24px;
+        line-height: 24px;
+        position: relative;
+        width: 24px;
+
+        svn {
+          display: block;
+          height: 100%;
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+.se-summary {
+  margin-left: 120px;
+  font-size: 0.8rem;
+  padding-bottom: 0.5rem;
+  @media screen and (max-width: 911px) {
+    margin-left: 0;
+    padding-top: 0.5rem;
+  }
+  span {
+    @media screen and (max-width: 700px) {
+      display: block;
+    }
+    margin-right: 0.8em;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.search-results {
+  margin-left: 120px;
+  @media screen and (max-width: 911px) {
+    margin-left: 0;
+  }
+
+  h4 {
+    padding: 0.5rem 0;
+  }
+}
+
+.result-item {
+  font-size: 0.7em;
+  line-height: 1.3;
+}

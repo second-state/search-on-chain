@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if IE]><link rel="icon" href="/favicon.ico"><![endif]-->
+    <title>Search On Chain</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/main.scss" />
+  </head>
+  <body>
+    <header class="navbar">
+      <h1>Search<br/>on Chain</h1>
+      <div class="entire-search">
+        <div class="search-input">
+          <div class="input-wrapper">
+            <div class="place-hold"></div>
+            <input class="input-field" maxlength="2048" name="q" type="text" aria-autocomplete="both" aria-haspopup="false" autocapitalize="off" autocomplete="off" autocorrect="off" role="combobox" spellcheck="false" title="Search" aria-label="Search">
+          </div>
+        </div>
+        <button class="search-button" aria-label="Search on Chain" type="submit">
+          <div class="button-figure">
+            <span class="figure-wrapper">
+              <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+              </svg>
+            </span>
+          </div>
+        </button>
+      </div>
+
+      <div class="se-summary">
+        <span><strong>350,903</strong> contracts indexed</span>
+        <span><strong>8</strong> unique ABIs uploaded</span>
+        <span><strong>1,300</strong> contracts which adhere to ABIs</span>
+      </div>
+    </header>
+
+    <div class="container search-results">
+      <div class="row justify-content-md-center">
+        <div class="col-md-8">
+          <h4>1 results</h4>
+          
+          <div class="result-item">
+              <dl class="row">
+                <dt class="col-sm-2">Address</dt>
+                <dd class="col-sm-10">0x47aE7EB0CaA34d522B7A9FB0B22Af3ed3BfB95C1</dd>
+              
+                <dt class="col-sm-2">Block</dt>
+                <dd class="col-sm-10">8685415</dd>
+              
+                <dt class="col-sm-2">Transaction</dt>
+                <dd class="col-sm-10 text-truncate">0x5473a40f81b2ef5e94a9cfad8fa046586af446416e7a390f1c4e0cd4e58c8291</dd>
+              
+                <dt class="col-sm-2">Creator</dt>
+                <dd class="col-sm-10">0xb279606eecdeed692eb87ff889dbffb7c93b618d</dd>
+              
+                <dt class="col-sm-2">Type</dt>
+                <dd class="col-sm-10">ERC20</dd>
+              
+                <dt class="col-sm-2">ERC20</dt>
+                <dd class="col-sm-10">
+                  <dl class="row">
+                    <dt class="col-sm-2">Name</dt>
+                    <dd class="col-sm-10">CyberMiles Token</dd>
+                    <dt class="col-sm-2">Symbol</dt>
+                    <dd class="col-sm-10">CMT</dd>
+                    <dt class="col-sm-2">Supply</dt>
+                    <dd class="col-sm-10">1000000000000000000000000000</dd>
+                    <dt class="col-sm-2">Decimals</dt>
+                    <dd class="col-sm-10">18</dd>
+                  </dl>
+                </dd>
+              </dl>
+            </div>
+            <div class="result-item">
+              <dl class="row">
+                <dt class="col-sm-2">Address</dt>
+                <dd class="col-sm-10">0x47aE7EB0CaA34d522B7A9FB0B22Af3ed3BfB95C1</dd>
+              
+                <dt class="col-sm-2">Block</dt>
+                <dd class="col-sm-10">8685415</dd>
+              
+                <dt class="col-sm-2">Transaction</dt>
+                <dd class="col-sm-10 text-truncate">0x5473a40f81b2ef5e94a9cfad8fa046586af446416e7a390f1c4e0cd4e58c8291</dd>
+              
+                <dt class="col-sm-2">Creator</dt>
+                <dd class="col-sm-10">0xb279606eecdeed692eb87ff889dbffb7c93b618d</dd>
+              
+                <dt class="col-sm-2">Type</dt>
+                <dd class="col-sm-10">ERC20</dd>
+              
+                <dt class="col-sm-2">ERC20</dt>
+                <dd class="col-sm-10">
+                  <dl class="row">
+                    <dt class="col-sm-2">Name</dt>
+                    <dd class="col-sm-10">CyberMiles Token</dd>
+                    <dt class="col-sm-2">Symbol</dt>
+                    <dd class="col-sm-10">CMT</dd>
+                    <dt class="col-sm-2">Supply</dt>
+                    <dd class="col-sm-10">1000000000000000000000000000</dd>
+                    <dt class="col-sm-2">Decimals</dt>
+                    <dd class="col-sm-10">18</dd>
+                  </dl>
+                </dd>
+              </dl>
+            </div>
+        </div>
+        <div class="col-md-4">
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="/main.ts"></script>
+  </body>
+</html>
