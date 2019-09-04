@@ -2,6 +2,11 @@ html {
   font-family: Arial, sans-serif;
 }
 
+body {
+  position: relative;
+  min-height: 100vh;
+}
+
 header {
   padding: 0 1rem !important;
   border-bottom: 1px solid #f6f6f6;
@@ -18,6 +23,17 @@ h1 {
   margin: 1rem 0;
   @media screen and (max-width: 911px) {
     // margin-bottom: 0.5rem;
+  }
+  span {
+    font-size: 0.7rem;
+    font-weight: normal;
+    font-family: Arial;
+    letter-spacing: 0;
+    position: absolute;
+    margin-top: 7px;
+    color: #36fa99;
+    background-color: #000;
+    padding: 5px;
   }
 }
 
@@ -89,7 +105,7 @@ h1 {
 
     .button-figure {
       background: none;
-      color: #6c4de0;
+      color: #17a2b8;
       height: 24px;
       width: 24px;
       margin: auto;
@@ -131,18 +147,81 @@ h1 {
   }
 }
 
-.search-results {
+.main-content {
   margin-left: 120px;
+  padding-bottom: 200px;
   @media screen and (max-width: 911px) {
     margin-left: 0;
   }
+}
 
-  h4 {
-    padding: 0.5rem 0;
-  }
+h4 {
+  padding: 0.5rem 0;
 }
 
 .result-item {
   font-size: 0.7em;
   line-height: 1.3;
+}
+
+.tags {
+  .tag {
+    flex-grow: 0;
+    margin-bottom: 1rem;
+  }
+  .btn {
+    white-space: nowrap;
+    // max-width: 100%;
+    // overflow: hidden;
+    // text-overflow: ellipsis;
+  }
+  .add-tag {
+    .btn {
+      width: 100%;
+    }
+  }
+}
+
+footer {
+  background-color: #000;
+  color: #a2a2a2;
+  padding: 1rem 120px;
+  margin-top: 2rem;
+  display: flex;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  @media screen and (max-width: 911px) {
+    padding-left: 1rem;
+  }
+  a {
+    font-size: 0.8em;
+    color: #fff;
+    &:hover, &:active, &:focus {
+      color: #fff;
+    }
+  }
+
+  dl {
+    margin-right: 3rem;
+    &:first-child {
+      a:hover {
+        text-decoration: none;
+      }
+    }
+  }
+
+  dt {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    font-weight: normal;
+  }
+
+  .etc-figure {
+    width: 20px;
+    margin-right: 1rem;
+  }
+  .ss-figure {
+    width: 70px;
+  }
 }
