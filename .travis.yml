@@ -3,14 +3,13 @@ node_js:
   - "10.15.0"
 
 script:
-  - yarn build
+  - npm run build
 
 deploy:
   provider: pages
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
   keep_history: true
-  target_branch: gh-pages
   local_dir: dist
   on:
     branch: master
