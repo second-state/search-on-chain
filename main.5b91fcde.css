@@ -1,0 +1,232 @@
+html {
+  font-family: Arial, sans-serif;
+}
+
+body {
+  position: relative;
+  min-height: 100vh;
+}
+
+header {
+  padding: 0 1rem !important;
+}
+
+h1 {
+  font-size: 1.6rem;
+  font-weight: bold;
+  letter-spacing: -2px;
+  width: 120px;
+  font-family: Arial Black;
+  line-height: 0.8;
+  margin: 1rem 0;
+}
+h1 span {
+  font-size: 0.7rem;
+  font-weight: normal;
+  font-family: Arial;
+  letter-spacing: 0;
+  position: absolute;
+  margin-top: 7px;
+  color: #36fa99;
+  background-color: #000;
+  padding: 5px;
+}
+@media screen and (max-width: 791px) {
+  h1 span {
+    left: 130px;
+    margin-top: -18px;
+  }
+}
+
+.entire-search {
+  background: #fff;
+  display: flex;
+  border: 1px solid #dfe1e5;
+  box-shadow: none;
+  height: 39px;
+  width: 638px;
+  border-radius: 24px;
+  z-index: 3;
+  height: 44px;
+  margin-right: auto;
+  box-sizing: content-box;
+}
+.entire-search .search-input {
+  flex: 1;
+  display: flex;
+  padding: 5px 4px 0 16px;
+  padding-left: 20px;
+}
+.entire-search .search-input .input-wrapper {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+}
+.entire-search .search-input .input-wrapper .place-hold {
+  color: transparent;
+  flex: 100%;
+  white-space: pre;
+  line-height: 34px;
+  height: 34px !important;
+}
+.entire-search .search-input .input-wrapper input {
+  background-color: transparent;
+  border: none;
+  margin: 0;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.87);
+  word-wrap: break-word;
+  outline: none;
+  display: flex;
+  flex: 100%;
+  -webkit-tap-highlight-color: transparent;
+  margin-top: -37px;
+  font: 16px arial, sans-serif;
+  line-height: 34px;
+  height: 34px !important;
+}
+.entire-search .search-button {
+  border-radius: 0;
+  height: 44px;
+  width: 44px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  flex: 0 0 auto;
+  padding: 0;
+  padding-right: 13px;
+  font-size: 11px;
+}
+.entire-search .search-button:focus {
+  outline: none;
+}
+.entire-search .search-button .button-figure {
+  background: none;
+  color: #17a2b8;
+  height: 24px;
+  width: 24px;
+  margin: auto;
+}
+.entire-search .search-button .button-figure .figure-wrapper {
+  display: inline-block;
+  fill: currentColor;
+  height: 24px;
+  line-height: 24px;
+  position: relative;
+  width: 24px;
+}
+.entire-search .search-button .button-figure .figure-wrapper svn {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.se-summary {
+  font-size: 0.8rem;
+  padding-bottom: 0.5rem;
+  padding-left: calc(120px + 1rem);
+  border-bottom: 1px solid #f6f6f6;
+}
+@media screen and (max-width: 911px) {
+  .se-summary {
+    padding-left: 1rem;
+    padding-top: 0.5rem;
+  }
+}
+.se-summary span {
+  margin-right: 0.8em;
+}
+@media screen and (max-width: 700px) {
+  .se-summary span {
+    display: block;
+  }
+}
+.se-summary span:last-child {
+  margin-right: 0;
+}
+.se-summary .waiting {
+  opacity: 0.25;
+}
+
+.main-content {
+  padding-bottom: 200px;
+  margin-left: 0;
+}
+
+h4 {
+  padding: 0.5rem 0;
+}
+
+.search-results {
+  margin-left: 120px;
+}
+@media screen and (max-width: 911px) {
+  .search-results {
+    margin-left: 0;
+  }
+}
+
+.result-item {
+  font-size: 0.7em;
+  line-height: 1.3;
+}
+.result-item .row {
+  border-bottom: 1px dashed #eee;
+}
+.result-item:last-child .row {
+  border-bottom: 0;
+}
+
+.tags .tag {
+  flex-grow: 0;
+  margin-bottom: 1rem;
+}
+.tags .btn {
+  white-space: nowrap;
+}
+.tags .add-tag .btn {
+  width: 100%;
+}
+
+footer {
+  background-color: #000;
+  color: #a2a2a2;
+  padding: 1rem 0 1rem 120px;
+  margin-top: 2rem;
+  display: flex;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+@media screen and (max-width: 911px) {
+  footer {
+    padding-left: 1rem;
+  }
+}
+footer a {
+  font-size: 0.8em;
+  color: #fff;
+}
+footer a:hover, footer a:active, footer a:focus {
+  color: #fff;
+}
+footer dl {
+  margin-right: 3rem;
+}
+footer dl:first-child a:hover {
+  text-decoration: none;
+}
+footer dt {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  font-weight: normal;
+}
+footer .etc-figure {
+  width: 20px;
+  margin-right: 1rem;
+}
+footer .ss-figure {
+  width: 70px;
+}
+
+/*# sourceMappingURL=/main.5b91fcde.css.map */
