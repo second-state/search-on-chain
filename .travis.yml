@@ -3,7 +3,7 @@ node_js:
   - "10.15.0"
 
 script:
-  - npm run build
+  - yarn build
 
 deploy:
   provider: pages
