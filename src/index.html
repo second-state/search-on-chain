@@ -19,10 +19,10 @@
         <div class="search-input">
           <div class="input-wrapper">
             <div class="place-hold"></div>
-            <input class="input-field" maxlength="2048" name="q" type="text" aria-autocomplete="both" aria-haspopup="false" autocapitalize="off" autocomplete="off" autocorrect="off" role="combobox" spellcheck="false" title="Search" aria-label="Search">
+            <input id="searchInput" class="input-field" maxlength="128" type="text" aria-autocomplete="both" aria-haspopup="false" autocapitalize="off" autocomplete="off" autocorrect="off" role="combobox" spellcheck="false" title="Search" aria-label="Search">
           </div>
         </div>
-        <button class="search-button" aria-label="Search on Chain" type="submit">
+        <button id="searchButton" class="search-button" aria-label="Search on Chain" type="submit">
           <div class="button-figure">
             <span class="figure-wrapper">
               <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -33,17 +33,20 @@
         </button>
       </div>
 
-      <div class="se-summary">
-        <span><strong>350,903</strong> contracts indexed</span>
-        <span><strong>8</strong> unique ABIs uploaded</span>
-        <span><strong>1,300</strong> contracts which adhere to ABIs</span>
-      </div>
     </header>
+    <div id="seSummary" class="se-summary">
+      <!--
+      <span><strong>{contractCount}</strong> contracts indexed</span>
+      <span><strong>{abiUploaded}</strong> unique ABIs uploaded</span>
+      <span><strong>{contractAdhered}</strong> contracts which adhere to ABIs</span>
+      -->
+      <span class="waiting">Calculating the summary ...</span>
+    </div>
 
     <div class="container main-content">
       <div class="row justify-content-md-center">
         <div class="col-md-8">
-          <div id="searchResults">
+          <div id="searchResults" class="search-results">
             <!--
               <div class="result-item">
                 <dl class="row">
@@ -61,6 +64,21 @@
                 </dl>
               </div>
             -->
+            <!--
+            <nav aria-label="Page navigation example">
+              <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                  <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="#">Next</a>
+                </li>
+              </ul>
+            </nav>
+            -->
           </div>
         </div>
         <div class="col-md-4">
@@ -69,8 +87,8 @@
             <div id="tags" class="row">
               <!--
                 <div class="tag col">
-                  <button type="button" class="btn btn-sm btn-outline-info">
-                    {name} <span class="badge badge-light" id="count_{name}""></span>
+                  <button tag="{name}" type="button" class="btn btn-sm btn-outline-info">
+                    {name} <span class="badge badge-light" id="count_{name}"></span>
                   </button>
                 </div>
               -->
