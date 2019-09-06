@@ -1,7 +1,7 @@
 export default [
   {
     name: 'ERC20',
-    value: [
+    abi: [
       {
         "constant": true,
         "inputs": [],

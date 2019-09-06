@@ -82,13 +82,45 @@
               <!--
                 <div class="tag col">
                   <button tag="{name}" type="button" class="btn btn-sm btn-outline-info">
-                    {name} <span class="badge badge-light" id="count_{name}"></span>
+                    {name} <span class="badge badge-light count-badge" id="count_{name}"></span>
                   </button>
                 </div>
               -->
             </div>
             <div class="add-tag">
-              <button type="button" class="btn btn-sm btn-light">Add Tag</button>
+              <button type="button" class="btn btn-sm btn-light" data-toggle="modal" data-target="#newTagModal">Add Tag</button>
+              <div class="modal fade" id="newTagModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">New Tag</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form>
+                        <div class="form-group">
+                          <label for="tagName" class="col-form-label">Tag Name:</label>
+                          <input type="text" class="form-control" id="tagName">
+                        </div>
+                        <div class="form-group">
+                          <label for="tagAbi" class="col-form-label">Abi:</label>
+                          <textarea class="form-control" id="tagAbi"></textarea>
+                        </div>
+                        <div class="form-group">
+                          <label for="tagTxHash" class="col-form-label">TxHash:</label>
+                          <input type="text" class="form-control" id="tagTxHash">
+                        </div>
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button id="submitTag" type="button" class="btn btn-info">Submit Tag</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

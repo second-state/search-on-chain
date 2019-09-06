@@ -30,6 +30,8 @@ class ESSS {
               if (xhr.readyState === 4) {
                   if (xhr.status === 200) {
                       resolve(xhr.responseText);
+                  } else {
+                      reject(xhr.responseText);
                   }
               }
           };
@@ -54,6 +56,8 @@ class ESSS {
               if (xhr.readyState === 4) {
                   if (xhr.status === 200) {
                       resolve(xhr.responseText);
+                  } else {
+                      reject(xhr.responseText);
                   }
               }
           };
@@ -78,6 +82,8 @@ class ESSS {
               if (xhr.readyState === 4) {
                   if (xhr.status === 200) {
                       resolve(xhr.responseText);
+                  } else {
+                      reject(xhr.responseText);
                   }
               }
           };
@@ -99,6 +105,8 @@ class ESSS {
                       var jsonResponse = JSON.parse(xhr.responseText);
                       var blockNumber = jsonResponse["aggregations"]["most_recent_block"]["value"]
                       resolve(blockNumber);
+                  } else {
+                      reject(xhr.responseText);
                   }
               }
           };
@@ -117,6 +125,8 @@ class ESSS {
               if (xhr.readyState === 4) {
                   if (xhr.status === 200) {
                       resolve(xhr.responseText);
+                  } else {
+                      reject(xhr.responseText);
                   }
               }
           };
@@ -137,6 +147,8 @@ class ESSS {
                       var jsonResponse = JSON.parse(xhr.responseText);
                       var abiCount = jsonResponse["hits"]["total"]
                       resolve(abiCount);
+                  } else {
+                      reject(xhr.responseText);
                   }
               }
           };
@@ -157,6 +169,8 @@ class ESSS {
                       var jsonResponse = JSON.parse(xhr.responseText);
                       var allCount = jsonResponse["hits"]["total"]
                       resolve(allCount);
+                  } else {
+                      reject(xhr.responseText);
                   }
               }
           };
@@ -179,6 +193,8 @@ class ESSS {
                       var jsonResponse = JSON.parse(xhr.responseText);
                       var allCount = jsonResponse["hits"]["total"]
                       resolve(allCount);
+                  } else {
+                      reject(xhr.responseText);
                   }
               }
           };
@@ -201,6 +217,8 @@ class ESSS {
               if (xhr.readyState === 4) {
                   if (xhr.status === 200) {
                       resolve(xhr.responseText);
+                  } else {
+                      reject(xhr.responseText);
                   }
               }
           };
@@ -226,6 +244,8 @@ class ESSS {
                       var jsonResponse = JSON.parse(xhr.responseText);
                       var allRecord = JSON.stringify(jsonResponse["hits"]["hits"][0]["_source"]);
                       resolve(allRecord);
+                  } else {
+                      reject(xhr.responseText);
                   }
               }
           };
@@ -252,6 +272,8 @@ class ESSS {
               if (xhr.readyState === 4) {
                   if (xhr.status === 200) {
                       resolve(xhr.responseText);
+                  } else {
+                      reject(xhr.responseText);
                   }
               }
           };
@@ -278,6 +300,8 @@ class ESSS {
               if (xhr.readyState === 4) {
                   if (xhr.status === 200) {
                       resolve(xhr.responseText);
+                  } else {
+                      reject(xhr.responseText);
                   }
               }
           };
@@ -301,6 +325,8 @@ class ESSS {
               if (xhr.readyState === 4) {
                   if (xhr.status === 200) {
                       resolve(xhr.responseText);
+                  } else {
+                      reject(xhr.responseText);
                   }
               }
           };
@@ -323,6 +349,8 @@ class ESSS {
               if (xhr.readyState === 4) {
                   if (xhr.status === 200) {
                       resolve(xhr.responseText);
+                  } else {
+                      reject(xhr.responseText);
                   }
               }
           };
@@ -350,6 +378,8 @@ class ESSS {
                       var jsonResponse = JSON.parse(xhr.responseText);
                       var allRecord = JSON.stringify(jsonResponse[0]);
                       resolve(allRecord);
+                  } else {
+                      reject(xhr.responseText);
                   }
               }
           };
@@ -375,6 +405,8 @@ class ESSS {
               if (xhr.readyState === 4) {
                   if (xhr.status === 200) {
                       resolve(xhr.responseText);
+                  } else {
+                      reject(xhr.responseText);
                   }
               }
           };
@@ -412,6 +444,8 @@ class ESSS {
               if (xhr.readyState === 4) {
                   if (xhr.status === 200) {
                       resolve(xhr.responseText);
+                  } else {
+                      reject(xhr.responseText);
                   }
               }
           };
@@ -449,6 +483,8 @@ class ESSS {
               if (xhr.readyState === 4) {
                   if (xhr.status === 200) {
                       resolve(xhr.responseText);
+                  } else {
+                      reject(xhr.responseText);
                   }
               }
           };

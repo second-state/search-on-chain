@@ -1,8 +1,17 @@
-import Abis from './abis';
+import Tags from './abis';
 import Env from './env/etc';
 import ES from './es-ss';
 
 const es = new ES(Env.ES_API);
+
+const LS_NAME = 'soc';
+
+interface Tag {
+  name: string,
+  abi: Array<object>
+}
+
+let AllTags: Array<Tag> = Tags;
 
 const srTemplate = document.querySelector('#searchResults').childNodes[1].textContent;
 const pgWholeTemplate = document.querySelector('#searchResults').childNodes[3].textContent;
@@ -13,23 +22,32 @@ const pgLinkTemplateElement = pgTemplateElement.querySelectorAll('li');
 const PageCount = 10;
 
 (function init() {
+  let lsTags: any = window.localStorage.getItem(LS_NAME);
+  if (lsTags !== null) {
+    lsTags = JSON.parse(lsTags);
+    AllTags = AllTags.concat(lsTags);
+  }
+
   const tags = document.querySelector('#tags');
   const tagTemplate = tags.childNodes[1].textContent;
 
-  Abis.forEach((abi, index) => {
-    const html = renderTemplate(abi, tagTemplate);
+  AllTags.forEach((tag, index) => {
+    const html = renderTemplate(tag, tagTemplate);
     const div = document.createElement('div');
     div.innerHTML = html;
+    // if (index < Tags.length) {
+    //   div.querySelector('.close-badge').remove();
+    // }
     tags.appendChild(div.children[0]);
 
-    es.shaAbi(JSON.stringify(abi.value)).then(data => {
+    es.shaAbi(JSON.stringify(tag.abi)).then(data => {
       data = JSON.parse(data);
       if (data.abiSha3) {
         es.searchUsingAbi(data.abiSha3).then(data => {
           data = JSON.parse(data);
-          document.querySelector(`#count_${abi.name}`).textContent = data.length;
+          document.querySelector(`#count_${tag.name}`).textContent = data.length;
           if (index === 0) {
-            document.querySelector(`#count_${abi.name}`).parentElement.classList.add('active');
+            document.querySelector(`#count_${tag.name}`).parentElement.classList.add('active');
             if (data.length > 0) {
               renderSearchResults(data, 0);
             }
@@ -81,18 +99,25 @@ const PageCount = 10;
   });
 
   document.querySelector('#tags').addEventListener('click', (event) => {
-    const target = event.target as HTMLElement;
-    if ( target.classList && target.classList.contains('btn')) {
+    let target = event.target as HTMLElement;
+    if (target.classList && (target.classList.contains('btn') || target.classList.contains('count-badge'))) {
+      if (target.classList.contains('count-badge')) {
+        target = target.parentElement;
+      }
+      const activeTagButton = document.querySelector('#tags .btn.active')
+      if (activeTagButton) {
+        activeTagButton.classList.remove('active');
+      }
       target.classList.add('active');
       document.querySelector('#searchResults').innerHTML = '';
       const tag = target.getAttribute('tag');
-      let value = [];
-      Abis.forEach(abi => {
-        if (abi.name === tag) {
-          value = abi.value;
+      let abi = [];
+      AllTags.forEach(t => {
+        if (t.name === tag) {
+          abi = t.abi;
         }
-      })
-      es.shaAbi(JSON.stringify(value)).then(data => {
+      });
+      es.shaAbi(JSON.stringify(abi)).then(data => {
         data = JSON.parse(data);
         if (data.abiSha3) {
           es.searchUsingAbi(data.abiSha3).then(data => {
@@ -114,7 +139,72 @@ const PageCount = 10;
       });
     }
   });
+
+  document.querySelector('#submitTag').addEventListener('click', (event) => {
+    const tagName = (document.querySelector('#tagName') as HTMLInputElement).value.trim();
+    const abi = (document.querySelector('#tagAbi') as HTMLInputElement).value.trim();
+    const txHash = (document.querySelector('#tagTxHash') as HTMLInputElement).value.trim();
+    
+    if (!/^[\w\s]+$/g.test(tagName)) {
+      alert('Invlid tag name.');
+      return;
+    }
+    try {
+      const t = JSON.parse(abi);
+      if (typeof t !== 'object') {
+        alert('Invalid abi');
+        return;
+      }
+    } catch (e) {
+      alert('Invalid abi');
+      return;
+    }
+
+    if (!/^0x[a-zA-Z0-9]{64}$/g.test(txHash)) {
+      alert('Invalid txHash');
+      return;
+    }
+
+    for (let i = 0; i < AllTags.length; i++) {
+      if (AllTags[i].name === tagName) {
+        alert('Duplicated tagName.');
+        return;
+      }
+    }
+
+    es.submitAbi(abi, txHash).then((data) => {
+      data = JSON.parse(data);
+      let tags: any = window.localStorage.getItem(LS_NAME);
+      if (tags === null) {
+        tags = [];
+      } else {
+        tags = JSON.parse(tags);
+      }
+      const tag = {
+        name: tagName,
+        abi: JSON.parse(abi),
+        txHash: txHash
+      };
+      renderTag(tag);
+      tags.push(tag);
+      AllTags.push(tag);
+      window.localStorage.setItem(LS_NAME, JSON.stringify(tags));
+      ((window as any).jQuery('#newTagModal') as any).modal('hide');
+    }).catch(e => {
+      console.log(e);
+      alert('Error occured while submitting the abi.')
+    });
+  });
 })();
+
+function renderTag(tag: object) {
+  const tags = document.querySelector('#tags');
+  const tagTemplate = tags.childNodes[1].textContent;
+  const html = renderTemplate(tag, tagTemplate);
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  tags.appendChild(div.children[0]);
+}
 
 function renderTemplate(obj: Object, template: string): string {
   let result = template;
