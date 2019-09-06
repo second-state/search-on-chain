@@ -5,6 +5,12 @@ import ES from './es-ss';
 const es = new ES(Env.ES_API);
 
 const srTemplate = document.querySelector('#searchResults').childNodes[1].textContent;
+const pgWholeTemplate = document.querySelector('#searchResults').childNodes[3].textContent;
+const div = document.createElement('div');
+div.innerHTML = pgWholeTemplate;
+const pgTemplateElement = div.children[0];
+const pgLinkTemplateElement = pgTemplateElement.querySelectorAll('li');
+const PageCount = 10;
 
 (function init() {
   const tags = document.querySelector('#tags');
@@ -25,15 +31,17 @@ const srTemplate = document.querySelector('#searchResults').childNodes[1].textCo
           if (index === 0) {
             document.querySelector(`#count_${abi.name}`).parentElement.classList.add('active');
             if (data.length > 0) {
-              renderSearchResults(data);
+              renderSearchResults(data, 0);
             }
           }
-        }).catch(() => {
-          alert('Network error');
+        }).catch((e) => {
+          console.log(e);
+          alert('Error occured.');
         })
       }
-    }).catch(() => {
-      alert('Network error');
+    }).catch((e) => {
+      console.log(e);
+      alert('Error occured.');
     });
   });
 
@@ -91,16 +99,18 @@ const srTemplate = document.querySelector('#searchResults').childNodes[1].textCo
             data = JSON.parse(data);
             if (data.length > 0) {
               document.querySelector(`#count_${tag}`).textContent = data.length;
-              renderSearchResults(data);
+              renderSearchResults(data, 0);
             } else {
               noResult();
             }
-          }).catch(() => {
-            alert('Network error');
+          }).catch((e) => {
+            console.log(e);
+            alert('Error occured.');
           });
         }
-      }).catch(() => {
-        alert('Network error');
+      }).catch((e) => {
+        console.log(e);
+        alert('Error occured.');
       });
     }
   });
@@ -122,14 +132,17 @@ function renderSummary(ready: Object) {
   summary.innerHTML = html;
 }
 
-function renderSearchResults(data: Array<object>) {
+function renderSearchResults(data: Array<object>, page: number) {
   const searchResults = document.querySelector('#searchResults');
 
   const title = document.createElement('h4');
   const count = document.createTextNode(data.length + (data.length === 1 ? ' Result' : ' Results'));
   title.appendChild(count);
   searchResults.appendChild(title);
-  data.forEach(d => {
+
+  const pageData = data.slice(page * PageCount, (page+1) * PageCount);
+
+  pageData.forEach(d => {
     const html = renderTemplate(d, srTemplate);
     const div = document.createElement('div');
     div.innerHTML = html;
@@ -148,6 +161,86 @@ function renderSearchResults(data: Array<object>) {
       dtt.parentElement.appendChild(dd);
     }
   });
+
+  if (data.length > PageCount) {
+    renderPage(data, page);
+  }
+}
+
+function renderPage(data: Array<object>, page: number) {
+  const VisPageNumber = 10;
+  const pageElement = pgTemplateElement.cloneNode(true);
+  const toBeRemoved = pageElement.childNodes[1].childNodes;
+  for (let i = toBeRemoved.length-1; i >= 0; i--) {
+    pageElement.childNodes[1].removeChild(toBeRemoved[i]);
+  }
+  const EndPageNumber = Math.floor((data.length-1) / PageCount);
+
+  if (page === 0) {
+    appendPageNumber(data, pageElement, 'Previous', -2);
+  } else {
+    appendPageNumber(data, pageElement, 'Previous', page - 1);
+  }
+
+  let startPage = page - VisPageNumber/2;
+  let endPage = page + VisPageNumber/2;
+  if (startPage < 0) {
+    startPage = 0;
+    endPage = startPage + VisPageNumber;
+    if (endPage > EndPageNumber) {
+      endPage = EndPageNumber;
+    }
+  } else {
+    if (endPage > EndPageNumber) {
+      endPage = EndPageNumber;
+      startPage = endPage - VisPageNumber;
+      if (startPage < 0) {
+        startPage = 0;
+      }
+    }
+  }
+
+  if (startPage > 0) {
+    appendPageNumber(data, pageElement, '1', 0);
+    if (startPage === 2) {
+      appendPageNumber(data, pageElement, '2', 1);
+    } else if (startPage > 2) {
+      appendPageNumber(data, pageElement, '...', page - VisPageNumber/2 - 2);
+    }
+  }
+  for (let i = startPage; i <= endPage; i++) {
+    appendPageNumber(data, pageElement, `${i+1}`, (i === page ? -1 : i));
+  }
+  if (endPage < EndPageNumber) {
+    if (endPage < EndPageNumber - 2) {
+      appendPageNumber(data, pageElement, '...', page + VisPageNumber/2 + 2);
+    } else if (endPage === EndPageNumber - 2) {
+      appendPageNumber(data, pageElement, `${EndPageNumber}`, EndPageNumber - 1);
+    }
+    appendPageNumber(data, pageElement, `${EndPageNumber+1}`, EndPageNumber);
+  }
+  
+  let nextLink;
+  if (page === EndPageNumber) {
+    appendPageNumber(data, pageElement, 'Next', -2);
+  } else {
+    appendPageNumber(data, pageElement, 'Next', page + 1);
+  }
+
+  document.querySelector('#searchResults').appendChild(pageElement);
+}
+
+function appendPageNumber(data: Array<object>, pageElement: Node, text: string, pageNumber: number) {
+  const link = pgLinkTemplateElement[pageNumber < 0 ? pageNumber*-1 : 0].cloneNode(true);
+  if (pageNumber >= 0) {
+    link.childNodes[0].addEventListener('click', (event) => {
+      document.querySelector('#searchResults').innerHTML = '';
+      renderSearchResults(data, pageNumber);
+      event.preventDefault();
+    });
+  }
+  link.childNodes[0].textContent = text;
+  pageElement.childNodes[1].appendChild(link);
 }
 
 function searchUsingKeywords() {
@@ -163,7 +256,7 @@ function searchUsingKeywords() {
   es.searchUsingKeywords({keywords: [q]}).then((data) => {
     data = JSON.parse(data);
     if (data.length > 0) {
-      renderSearchResults(data);
+      renderSearchResults(data, 0);
     } else {
       noResult();
     }

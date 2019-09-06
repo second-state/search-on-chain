@@ -157,6 +157,11 @@ h1 {
 .main-content {
   padding-bottom: 200px;
   margin-left: 0;
+  > .row {
+    @media screen and (max-width: 768px) {
+      flex-direction: column-reverse;
+    }
+  }
 }
 
 h4 {
