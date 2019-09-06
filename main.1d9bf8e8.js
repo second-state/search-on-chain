@@ -847,6 +847,12 @@ var es_ss_1 = __importDefault(require("./es-ss"));
 
 var es = new es_ss_1.default(etc_1.default.ES_API);
 var srTemplate = document.querySelector('#searchResults').childNodes[1].textContent;
+var pgWholeTemplate = document.querySelector('#searchResults').childNodes[3].textContent;
+var div = document.createElement('div');
+div.innerHTML = pgWholeTemplate;
+var pgTemplateElement = div.children[0];
+var pgLinkTemplateElement = pgTemplateElement.querySelectorAll('li');
+var PageCount = 10;
 
 (function init() {
   var tags = document.querySelector('#tags');
@@ -868,15 +874,17 @@ var srTemplate = document.querySelector('#searchResults').childNodes[1].textCont
             document.querySelector("#count_" + abi.name).parentElement.classList.add('active');
 
             if (data.length > 0) {
-              renderSearchResults(data);
+              renderSearchResults(data, 0);
             }
           }
-        }).catch(function () {
-          alert('Network error');
+        }).catch(function (e) {
+          console.log(e);
+          alert('Error occured.');
         });
       }
-    }).catch(function () {
-      alert('Network error');
+    }).catch(function (e) {
+      console.log(e);
+      alert('Error occured.');
     });
   });
   var ready = {
@@ -937,16 +945,18 @@ var srTemplate = document.querySelector('#searchResults').childNodes[1].textCont
 
             if (data.length > 0) {
               document.querySelector("#count_" + tag_1).textContent = data.length;
-              renderSearchResults(data);
+              renderSearchResults(data, 0);
             } else {
               noResult();
             }
-          }).catch(function () {
-            alert('Network error');
+          }).catch(function (e) {
+            console.log(e);
+            alert('Error occured.');
           });
         }
-      }).catch(function () {
-        alert('Network error');
+      }).catch(function (e) {
+        console.log(e);
+        alert('Error occured.');
       });
     }
   });
@@ -970,13 +980,14 @@ function renderSummary(ready) {
   summary.innerHTML = html;
 }
 
-function renderSearchResults(data) {
+function renderSearchResults(data, page) {
   var searchResults = document.querySelector('#searchResults');
   var title = document.createElement('h4');
   var count = document.createTextNode(data.length + (data.length === 1 ? ' Result' : ' Results'));
   title.appendChild(count);
   searchResults.appendChild(title);
-  data.forEach(function (d) {
+  var pageData = data.slice(page * PageCount, (page + 1) * PageCount);
+  pageData.forEach(function (d) {
     var html = renderTemplate(d, srTemplate);
     var div = document.createElement('div');
     div.innerHTML = html;
@@ -995,6 +1006,98 @@ function renderSearchResults(data) {
       dtt.parentElement.appendChild(dd);
     }
   });
+
+  if (data.length > PageCount) {
+    renderPage(data, page);
+  }
+}
+
+function renderPage(data, page) {
+  var VisPageNumber = 10;
+  var pageElement = pgTemplateElement.cloneNode(true);
+  var toBeRemoved = pageElement.childNodes[1].childNodes;
+
+  for (var i = toBeRemoved.length - 1; i >= 0; i--) {
+    pageElement.childNodes[1].removeChild(toBeRemoved[i]);
+  }
+
+  var EndPageNumber = Math.floor((data.length - 1) / PageCount);
+
+  if (page === 0) {
+    appendPageNumber(data, pageElement, 'Previous', -2);
+  } else {
+    appendPageNumber(data, pageElement, 'Previous', page - 1);
+  }
+
+  var startPage = page - VisPageNumber / 2;
+  var endPage = page + VisPageNumber / 2;
+
+  if (startPage < 0) {
+    startPage = 0;
+    endPage = startPage + VisPageNumber;
+
+    if (endPage > EndPageNumber) {
+      endPage = EndPageNumber;
+    }
+  } else {
+    if (endPage > EndPageNumber) {
+      endPage = EndPageNumber;
+      startPage = endPage - VisPageNumber;
+
+      if (startPage < 0) {
+        startPage = 0;
+      }
+    }
+  }
+
+  if (startPage > 0) {
+    appendPageNumber(data, pageElement, '1', 0);
+
+    if (startPage === 2) {
+      appendPageNumber(data, pageElement, '2', 1);
+    } else if (startPage > 2) {
+      appendPageNumber(data, pageElement, '...', page - VisPageNumber / 2 - 2);
+    }
+  }
+
+  for (var i = startPage; i <= endPage; i++) {
+    appendPageNumber(data, pageElement, "" + (i + 1), i === page ? -1 : i);
+  }
+
+  if (endPage < EndPageNumber) {
+    if (endPage < EndPageNumber - 2) {
+      appendPageNumber(data, pageElement, '...', page + VisPageNumber / 2 + 2);
+    } else if (endPage === EndPageNumber - 2) {
+      appendPageNumber(data, pageElement, "" + EndPageNumber, EndPageNumber - 1);
+    }
+
+    appendPageNumber(data, pageElement, "" + (EndPageNumber + 1), EndPageNumber);
+  }
+
+  var nextLink;
+
+  if (page === EndPageNumber) {
+    appendPageNumber(data, pageElement, 'Next', -2);
+  } else {
+    appendPageNumber(data, pageElement, 'Next', page + 1);
+  }
+
+  document.querySelector('#searchResults').appendChild(pageElement);
+}
+
+function appendPageNumber(data, pageElement, text, pageNumber) {
+  var link = pgLinkTemplateElement[pageNumber < 0 ? pageNumber * -1 : 0].cloneNode(true);
+
+  if (pageNumber >= 0) {
+    link.childNodes[0].addEventListener('click', function (event) {
+      document.querySelector('#searchResults').innerHTML = '';
+      renderSearchResults(data, pageNumber);
+      event.preventDefault();
+    });
+  }
+
+  link.childNodes[0].textContent = text;
+  pageElement.childNodes[1].appendChild(link);
 }
 
 function searchUsingKeywords() {
@@ -1017,7 +1120,7 @@ function searchUsingKeywords() {
     data = JSON.parse(data);
 
     if (data.length > 0) {
-      renderSearchResults(data);
+      renderSearchResults(data, 0);
     } else {
       noResult();
     }
@@ -1028,4 +1131,4 @@ function noResult() {
   document.querySelector('#searchResults').innerHTML = '<h4>No result</h4>';
 }
 },{"./abis":"SsOS","./env/etc":"pFhC","./es-ss":"0HzC"}]},{},["ZCfc"], null)
-//# sourceMappingURL=/main.3348210b.js.map
+//# sourceMappingURL=/main.1d9bf8e8.js.map

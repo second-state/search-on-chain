@@ -152,6 +152,11 @@ h1 span {
   padding-bottom: 200px;
   margin-left: 0;
 }
+@media screen and (max-width: 768px) {
+  .main-content > .row {
+    flex-direction: column-reverse;
+  }
+}
 
 h4 {
   padding: 0.5rem 0;
@@ -229,4 +234,4 @@ footer .ss-figure {
   width: 70px;
 }
 
-/*# sourceMappingURL=/main.5b91fcde.css.map */
+/*# sourceMappingURL=/main.6ca3062a.css.map */
