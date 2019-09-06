@@ -125,7 +125,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = [{
   name: 'ERC20',
-  value: [{
+  abi: [{
     "constant": true,
     "inputs": [],
     "name": "name",
@@ -358,6 +358,8 @@ function () {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
               resolve(xhr.responseText);
+            } else {
+              reject(xhr.responseText);
             }
           }
         };
@@ -384,6 +386,8 @@ function () {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
               resolve(xhr.responseText);
+            } else {
+              reject(xhr.responseText);
             }
           }
         };
@@ -410,6 +414,8 @@ function () {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
               resolve(xhr.responseText);
+            } else {
+              reject(xhr.responseText);
             }
           }
         };
@@ -432,6 +438,8 @@ function () {
               var jsonResponse = JSON.parse(xhr.responseText);
               var blockNumber = jsonResponse["aggregations"]["most_recent_block"]["value"];
               resolve(blockNumber);
+            } else {
+              reject(xhr.responseText);
             }
           }
         };
@@ -452,6 +460,8 @@ function () {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
               resolve(xhr.responseText);
+            } else {
+              reject(xhr.responseText);
             }
           }
         };
@@ -474,6 +484,8 @@ function () {
               var jsonResponse = JSON.parse(xhr.responseText);
               var abiCount = jsonResponse["hits"]["total"];
               resolve(abiCount);
+            } else {
+              reject(xhr.responseText);
             }
           }
         };
@@ -496,6 +508,8 @@ function () {
               var jsonResponse = JSON.parse(xhr.responseText);
               var allCount = jsonResponse["hits"]["total"];
               resolve(allCount);
+            } else {
+              reject(xhr.responseText);
             }
           }
         };
@@ -518,6 +532,8 @@ function () {
               var jsonResponse = JSON.parse(xhr.responseText);
               var allCount = jsonResponse["hits"]["total"];
               resolve(allCount);
+            } else {
+              reject(xhr.responseText);
             }
           }
         };
@@ -543,6 +559,8 @@ function () {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
               resolve(xhr.responseText);
+            } else {
+              reject(xhr.responseText);
             }
           }
         };
@@ -571,6 +589,8 @@ function () {
               var jsonResponse = JSON.parse(xhr.responseText);
               var allRecord = JSON.stringify(jsonResponse["hits"]["hits"][0]["_source"]);
               resolve(allRecord);
+            } else {
+              reject(xhr.responseText);
             }
           }
         };
@@ -599,6 +619,8 @@ function () {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
               resolve(xhr.responseText);
+            } else {
+              reject(xhr.responseText);
             }
           }
         };
@@ -627,6 +649,8 @@ function () {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
               resolve(xhr.responseText);
+            } else {
+              reject(xhr.responseText);
             }
           }
         };
@@ -651,6 +675,8 @@ function () {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
               resolve(xhr.responseText);
+            } else {
+              reject(xhr.responseText);
             }
           }
         };
@@ -675,6 +701,8 @@ function () {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
               resolve(xhr.responseText);
+            } else {
+              reject(xhr.responseText);
             }
           }
         };
@@ -703,6 +731,8 @@ function () {
               var jsonResponse = JSON.parse(xhr.responseText);
               var allRecord = JSON.stringify(jsonResponse[0]);
               resolve(allRecord);
+            } else {
+              reject(xhr.responseText);
             }
           }
         };
@@ -729,6 +759,8 @@ function () {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
               resolve(xhr.responseText);
+            } else {
+              reject(xhr.responseText);
             }
           }
         };
@@ -769,6 +801,8 @@ function () {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
               resolve(xhr.responseText);
+            } else {
+              reject(xhr.responseText);
             }
           }
         };
@@ -809,6 +843,8 @@ function () {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
               resolve(xhr.responseText);
+            } else {
+              reject(xhr.responseText);
             }
           }
         };
@@ -829,6 +865,8 @@ exports.default = _default;
 },{}],"ZCfc":[function(require,module,exports) {
 "use strict";
 
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 var __importDefault = this && this.__importDefault || function (mod) {
   return mod && mod.__esModule ? mod : {
     "default": mod
@@ -846,6 +884,8 @@ var etc_1 = __importDefault(require("./env/etc"));
 var es_ss_1 = __importDefault(require("./es-ss"));
 
 var es = new es_ss_1.default(etc_1.default.ES_API);
+var LS_NAME = 'soc';
+var AllTags = abis_1.default;
 var srTemplate = document.querySelector('#searchResults').childNodes[1].textContent;
 var pgWholeTemplate = document.querySelector('#searchResults').childNodes[3].textContent;
 var div = document.createElement('div');
@@ -855,23 +895,33 @@ var pgLinkTemplateElement = pgTemplateElement.querySelectorAll('li');
 var PageCount = 10;
 
 (function init() {
+  var lsTags = window.localStorage.getItem(LS_NAME);
+
+  if (lsTags !== null) {
+    lsTags = JSON.parse(lsTags);
+    AllTags = AllTags.concat(lsTags);
+  }
+
   var tags = document.querySelector('#tags');
   var tagTemplate = tags.childNodes[1].textContent;
-  abis_1.default.forEach(function (abi, index) {
-    var html = renderTemplate(abi, tagTemplate);
+  AllTags.forEach(function (tag, index) {
+    var html = renderTemplate(tag, tagTemplate);
     var div = document.createElement('div');
-    div.innerHTML = html;
+    div.innerHTML = html; // if (index < Tags.length) {
+    //   div.querySelector('.close-badge').remove();
+    // }
+
     tags.appendChild(div.children[0]);
-    es.shaAbi(JSON.stringify(abi.value)).then(function (data) {
+    es.shaAbi(JSON.stringify(tag.abi)).then(function (data) {
       data = JSON.parse(data);
 
       if (data.abiSha3) {
         es.searchUsingAbi(data.abiSha3).then(function (data) {
           data = JSON.parse(data);
-          document.querySelector("#count_" + abi.name).textContent = data.length;
+          document.querySelector("#count_" + tag.name).textContent = data.length;
 
           if (index === 0) {
-            document.querySelector("#count_" + abi.name).parentElement.classList.add('active');
+            document.querySelector("#count_" + tag.name).parentElement.classList.add('active');
 
             if (data.length > 0) {
               renderSearchResults(data, 0);
@@ -926,17 +976,27 @@ var PageCount = 10;
   document.querySelector('#tags').addEventListener('click', function (event) {
     var target = event.target;
 
-    if (target.classList && target.classList.contains('btn')) {
+    if (target.classList && (target.classList.contains('btn') || target.classList.contains('count-badge'))) {
+      if (target.classList.contains('count-badge')) {
+        target = target.parentElement;
+      }
+
+      var activeTagButton = document.querySelector('#tags .btn.active');
+
+      if (activeTagButton) {
+        activeTagButton.classList.remove('active');
+      }
+
       target.classList.add('active');
       document.querySelector('#searchResults').innerHTML = '';
       var tag_1 = target.getAttribute('tag');
-      var value_1 = [];
-      abis_1.default.forEach(function (abi) {
-        if (abi.name === tag_1) {
-          value_1 = abi.value;
+      var abi_1 = [];
+      AllTags.forEach(function (t) {
+        if (t.name === tag_1) {
+          abi_1 = t.abi;
         }
       });
-      es.shaAbi(JSON.stringify(value_1)).then(function (data) {
+      es.shaAbi(JSON.stringify(abi_1)).then(function (data) {
         data = JSON.parse(data);
 
         if (data.abiSha3) {
@@ -960,7 +1020,75 @@ var PageCount = 10;
       });
     }
   });
+  document.querySelector('#submitTag').addEventListener('click', function (event) {
+    var tagName = document.querySelector('#tagName').value.trim();
+    var abi = document.querySelector('#tagAbi').value.trim();
+    var txHash = document.querySelector('#tagTxHash').value.trim();
+
+    if (!/^[\w\s]+$/g.test(tagName)) {
+      alert('Invlid tag name.');
+      return;
+    }
+
+    try {
+      var t = JSON.parse(abi);
+
+      if (_typeof(t) !== 'object') {
+        alert('Invalid abi');
+        return;
+      }
+    } catch (e) {
+      alert('Invalid abi');
+      return;
+    }
+
+    if (!/^0x[a-zA-Z0-9]{64}$/g.test(txHash)) {
+      alert('Invalid txHash');
+      return;
+    }
+
+    for (var i = 0; i < AllTags.length; i++) {
+      if (AllTags[i].name === tagName) {
+        alert('Duplicated tagName.');
+        return;
+      }
+    }
+
+    es.submitAbi(abi, txHash).then(function (data) {
+      data = JSON.parse(data);
+      var tags = window.localStorage.getItem(LS_NAME);
+
+      if (tags === null) {
+        tags = [];
+      } else {
+        tags = JSON.parse(tags);
+      }
+
+      var tag = {
+        name: tagName,
+        abi: JSON.parse(abi),
+        txHash: txHash
+      };
+      renderTag(tag);
+      tags.push(tag);
+      AllTags.push(tag);
+      window.localStorage.setItem(LS_NAME, JSON.stringify(tags));
+      window.jQuery('#newTagModal').modal('hide');
+    }).catch(function (e) {
+      console.log(e);
+      alert('Error occured while submitting the abi.');
+    });
+  });
 })();
+
+function renderTag(tag) {
+  var tags = document.querySelector('#tags');
+  var tagTemplate = tags.childNodes[1].textContent;
+  var html = renderTemplate(tag, tagTemplate);
+  var div = document.createElement('div');
+  div.innerHTML = html;
+  tags.appendChild(div.children[0]);
+}
 
 function renderTemplate(obj, template) {
   var result = template;
@@ -1131,4 +1259,4 @@ function noResult() {
   document.querySelector('#searchResults').innerHTML = '<h4>No result</h4>';
 }
 },{"./abis":"SsOS","./env/etc":"pFhC","./es-ss":"0HzC"}]},{},["ZCfc"], null)
-//# sourceMappingURL=/main.1d9bf8e8.js.map
+//# sourceMappingURL=/main.6fbeedf0.js.map

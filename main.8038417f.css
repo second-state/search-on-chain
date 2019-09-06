@@ -189,7 +189,7 @@ h4 {
 .tags .btn {
   white-space: nowrap;
 }
-.tags .add-tag .btn {
+.tags .add-tag > .btn {
   width: 100%;
 }
 
@@ -234,4 +234,4 @@ footer .ss-figure {
   width: 70px;
 }
 
-/*# sourceMappingURL=/main.6ca3062a.css.map */
+/*# sourceMappingURL=/main.8038417f.css.map */
