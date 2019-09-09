@@ -1141,7 +1141,7 @@ function renderSearchResults(data, page) {
 }
 
 function renderPage(data, page) {
-  var VisPageNumber = 10;
+  var VisPageNumber = 4;
   var pageElement = pgTemplateElement.cloneNode(true);
   var toBeRemoved = pageElement.childNodes[1].childNodes;
 
@@ -1259,4 +1259,4 @@ function noResult() {
   document.querySelector('#searchResults').innerHTML = '<h4>No result</h4>';
 }
 },{"./abis":"SsOS","./env/etc":"pFhC","./es-ss":"0HzC"}]},{},["ZCfc"], null)
-//# sourceMappingURL=/main.6fbeedf0.js.map
+//# sourceMappingURL=/main.7f610ecd.js.map
