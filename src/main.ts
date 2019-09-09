@@ -258,7 +258,7 @@ function renderSearchResults(data: Array<object>, page: number) {
 }
 
 function renderPage(data: Array<object>, page: number) {
-  const VisPageNumber = 10;
+  const VisPageNumber = 4;
   const pageElement = pgTemplateElement.cloneNode(true);
   const toBeRemoved = pageElement.childNodes[1].childNodes;
   for (let i = toBeRemoved.length-1; i >= 0; i--) {
