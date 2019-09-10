@@ -13,10 +13,12 @@ interface Tag {
 
 let AllTags: Array<Tag> = Tags;
 
-const srTemplate = document.querySelector('#searchResults').childNodes[1].textContent;
-const pgWholeTemplate = document.querySelector('#searchResults').childNodes[3].textContent;
+const qs = document.querySelector.bind(document);
+
+const tagTemplate = qs('#tags').childNodes[1].textContent;
+const srTemplate = qs('#searchResults').childNodes[1].textContent;
 const div = document.createElement('div');
-div.innerHTML = pgWholeTemplate;
+div.innerHTML = qs('#searchResults').childNodes[3].textContent;
 const pgTemplateElement = div.children[0];
 const pgLinkTemplateElement = pgTemplateElement.querySelectorAll('li');
 const PageCount = 10;
@@ -28,26 +30,17 @@ const PageCount = 10;
     AllTags = AllTags.concat(lsTags);
   }
 
-  const tags = document.querySelector('#tags');
-  const tagTemplate = tags.childNodes[1].textContent;
-
   AllTags.forEach((tag, index) => {
-    const html = renderTemplate(tag, tagTemplate);
-    const div = document.createElement('div');
-    div.innerHTML = html;
-    // if (index < Tags.length) {
-    //   div.querySelector('.close-badge').remove();
-    // }
-    tags.appendChild(div.children[0]);
+    renderTag(tag);
 
     es.shaAbi(JSON.stringify(tag.abi)).then(data => {
       data = JSON.parse(data);
       if (data.abiSha3) {
         es.searchUsingAbi(data.abiSha3).then(data => {
           data = JSON.parse(data);
-          document.querySelector(`#count_${tag.name}`).textContent = data.length;
+          qs(`#count_${tag.name}`).textContent = data.length;
           if (index === 0) {
-            document.querySelector(`#count_${tag.name}`).parentElement.classList.add('active');
+            qs(`#count_${tag.name}`).parentElement.classList.add('active');
             if (data.length > 0) {
               renderSearchResults(data, 0);
             }
@@ -89,27 +82,27 @@ const PageCount = 10;
   });
 
   // event register
-  document.querySelector('#searchButton').addEventListener('click', () => {
+  qs('#searchButton').addEventListener('click', () => {
     searchUsingKeywords();
   });
-  document.querySelector('#searchInput').addEventListener('keypress', (event: KeyboardEvent) => {
+  qs('#searchInput').addEventListener('keypress', (event: KeyboardEvent) => {
     if (event.keyCode === 13) {
       searchUsingKeywords();
     }
   });
 
-  document.querySelector('#tags').addEventListener('click', (event) => {
+  qs('#tags').addEventListener('click', (event) => {
     let target = event.target as HTMLElement;
     if (target.classList && (target.classList.contains('btn') || target.classList.contains('count-badge'))) {
       if (target.classList.contains('count-badge')) {
         target = target.parentElement;
       }
-      const activeTagButton = document.querySelector('#tags .btn.active')
+      const activeTagButton = qs('#tags .btn.active')
       if (activeTagButton) {
         activeTagButton.classList.remove('active');
       }
       target.classList.add('active');
-      document.querySelector('#searchResults').innerHTML = '';
+      qs('#searchResults').innerHTML = '';
       const tag = target.getAttribute('tag');
       let abi = [];
       AllTags.forEach(t => {
@@ -123,7 +116,7 @@ const PageCount = 10;
           es.searchUsingAbi(data.abiSha3).then(data => {
             data = JSON.parse(data);
             if (data.length > 0) {
-              document.querySelector(`#count_${tag}`).textContent = data.length;
+              qs(`#count_${tag}`).textContent = data.length;
               renderSearchResults(data, 0);
             } else {
               noResult();
@@ -140,10 +133,10 @@ const PageCount = 10;
     }
   });
 
-  document.querySelector('#submitTag').addEventListener('click', (event) => {
-    const tagName = (document.querySelector('#tagName') as HTMLInputElement).value.trim();
-    const abi = (document.querySelector('#tagAbi') as HTMLInputElement).value.trim();
-    const txHash = (document.querySelector('#tagTxHash') as HTMLInputElement).value.trim();
+  qs('#submitTag').addEventListener('click', (event) => {
+    const tagName = (qs('#tagName') as HTMLInputElement).value.trim();
+    const abi = (qs('#tagAbi') as HTMLInputElement).value.trim();
+    const txHash = (qs('#tagTxHash') as HTMLInputElement).value.trim();
     
     if (!/^[\w\s]+$/g.test(tagName)) {
       alert('Invlid tag name.');
@@ -198,8 +191,7 @@ const PageCount = 10;
 })();
 
 function renderTag(tag: object) {
-  const tags = document.querySelector('#tags');
-  const tagTemplate = tags.childNodes[1].textContent;
+  const tags = qs('#tags');
   const html = renderTemplate(tag, tagTemplate);
   const div = document.createElement('div');
   div.innerHTML = html;
@@ -216,14 +208,14 @@ function renderTemplate(obj: Object, template: string): string {
 }
 
 function renderSummary(ready: Object) {
-  const summary = document.querySelector('#seSummary');
+  const summary = qs('#seSummary');
   const sumTemplate = summary.childNodes[1].textContent;
   const html = renderTemplate(ready, sumTemplate);
   summary.innerHTML = html;
 }
 
 function renderSearchResults(data: Array<object>, page: number) {
-  const searchResults = document.querySelector('#searchResults');
+  const searchResults = qs('#searchResults');
 
   const title = document.createElement('h4');
   const count = document.createTextNode(data.length + (data.length === 1 ? ' Result' : ' Results'));
@@ -317,14 +309,14 @@ function renderPage(data: Array<object>, page: number) {
     appendPageNumber(data, pageElement, 'Next', page + 1);
   }
 
-  document.querySelector('#searchResults').appendChild(pageElement);
+  qs('#searchResults').appendChild(pageElement);
 }
 
 function appendPageNumber(data: Array<object>, pageElement: Node, text: string, pageNumber: number) {
   const link = pgLinkTemplateElement[pageNumber < 0 ? pageNumber*-1 : 0].cloneNode(true);
   if (pageNumber >= 0) {
     link.childNodes[0].addEventListener('click', (event) => {
-      document.querySelector('#searchResults').innerHTML = '';
+      qs('#searchResults').innerHTML = '';
       renderSearchResults(data, pageNumber);
       event.preventDefault();
     });
@@ -334,12 +326,12 @@ function appendPageNumber(data: Array<object>, pageElement: Node, text: string, 
 }
 
 function searchUsingKeywords() {
-  document.querySelector('#searchResults').innerHTML = '';
-  const activeTagButton = document.querySelector('#tags .btn.active')
+  qs('#searchResults').innerHTML = '';
+  const activeTagButton = qs('#tags .btn.active')
   if (activeTagButton) {
     activeTagButton.classList.remove('active');
   }
-  const q = (document.querySelector('#searchInput') as HTMLInputElement).value;
+  const q = (qs('#searchInput') as HTMLInputElement).value;
   if (!q || /^\s*$/g.test(q)) {
     return;
   }
@@ -354,5 +346,5 @@ function searchUsingKeywords() {
 }
 
 function noResult() {
-  document.querySelector('#searchResults').innerHTML = '<h4>No result</h4>';
+  qs('#searchResults').innerHTML = '<h4>No result</h4>';
 }

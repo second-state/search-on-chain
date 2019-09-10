@@ -1,5 +1,5 @@
 html {
-  font-family: Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 body {
@@ -17,7 +17,7 @@ h1 {
   // text-transform: uppercase;
   letter-spacing: -2px;
   width: 120px;
-  font-family: Arial Black;
+  font-family: Arial Black, Helvetica, sans-serif;
   line-height: 0.8;
   margin: 1rem 0;
   @media screen and (max-width: 911px) {
@@ -26,7 +26,7 @@ h1 {
   span {
     font-size: 0.7rem;
     font-weight: normal;
-    font-family: Arial;
+    font-family: Arial, Helvetica, sans-serif;
     letter-spacing: 0;
     position: absolute;
     margin-top: 7px;
@@ -84,7 +84,7 @@ h1 {
         flex: 100%;
         -webkit-tap-highlight-color: transparent;
         margin-top: -37px;
-        font: 16px arial,sans-serif;
+        font: 16px Arial, Helvetica, sans-serif;
         line-height: 34px;
         height: 34px !important;
       }
