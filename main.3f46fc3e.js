@@ -886,10 +886,11 @@ var es_ss_1 = __importDefault(require("./es-ss"));
 var es = new es_ss_1.default(etc_1.default.ES_API);
 var LS_NAME = 'soc';
 var AllTags = abis_1.default;
-var srTemplate = document.querySelector('#searchResults').childNodes[1].textContent;
-var pgWholeTemplate = document.querySelector('#searchResults').childNodes[3].textContent;
+var qs = document.querySelector.bind(document);
+var tagTemplate = qs('#tags').childNodes[1].textContent;
+var srTemplate = qs('#searchResults').childNodes[1].textContent;
 var div = document.createElement('div');
-div.innerHTML = pgWholeTemplate;
+div.innerHTML = qs('#searchResults').childNodes[3].textContent;
 var pgTemplateElement = div.children[0];
 var pgLinkTemplateElement = pgTemplateElement.querySelectorAll('li');
 var PageCount = 10;
@@ -902,26 +903,18 @@ var PageCount = 10;
     AllTags = AllTags.concat(lsTags);
   }
 
-  var tags = document.querySelector('#tags');
-  var tagTemplate = tags.childNodes[1].textContent;
   AllTags.forEach(function (tag, index) {
-    var html = renderTemplate(tag, tagTemplate);
-    var div = document.createElement('div');
-    div.innerHTML = html; // if (index < Tags.length) {
-    //   div.querySelector('.close-badge').remove();
-    // }
-
-    tags.appendChild(div.children[0]);
+    renderTag(tag);
     es.shaAbi(JSON.stringify(tag.abi)).then(function (data) {
       data = JSON.parse(data);
 
       if (data.abiSha3) {
         es.searchUsingAbi(data.abiSha3).then(function (data) {
           data = JSON.parse(data);
-          document.querySelector("#count_" + tag.name).textContent = data.length;
+          qs("#count_" + tag.name).textContent = data.length;
 
           if (index === 0) {
-            document.querySelector("#count_" + tag.name).parentElement.classList.add('active');
+            qs("#count_" + tag.name).parentElement.classList.add('active');
 
             if (data.length > 0) {
               renderSearchResults(data, 0);
@@ -965,15 +958,15 @@ var PageCount = 10;
     }
   }); // event register
 
-  document.querySelector('#searchButton').addEventListener('click', function () {
+  qs('#searchButton').addEventListener('click', function () {
     searchUsingKeywords();
   });
-  document.querySelector('#searchInput').addEventListener('keypress', function (event) {
+  qs('#searchInput').addEventListener('keypress', function (event) {
     if (event.keyCode === 13) {
       searchUsingKeywords();
     }
   });
-  document.querySelector('#tags').addEventListener('click', function (event) {
+  qs('#tags').addEventListener('click', function (event) {
     var target = event.target;
 
     if (target.classList && (target.classList.contains('btn') || target.classList.contains('count-badge'))) {
@@ -981,14 +974,14 @@ var PageCount = 10;
         target = target.parentElement;
       }
 
-      var activeTagButton = document.querySelector('#tags .btn.active');
+      var activeTagButton = qs('#tags .btn.active');
 
       if (activeTagButton) {
         activeTagButton.classList.remove('active');
       }
 
       target.classList.add('active');
-      document.querySelector('#searchResults').innerHTML = '';
+      qs('#searchResults').innerHTML = '';
       var tag_1 = target.getAttribute('tag');
       var abi_1 = [];
       AllTags.forEach(function (t) {
@@ -1004,7 +997,7 @@ var PageCount = 10;
             data = JSON.parse(data);
 
             if (data.length > 0) {
-              document.querySelector("#count_" + tag_1).textContent = data.length;
+              qs("#count_" + tag_1).textContent = data.length;
               renderSearchResults(data, 0);
             } else {
               noResult();
@@ -1020,10 +1013,10 @@ var PageCount = 10;
       });
     }
   });
-  document.querySelector('#submitTag').addEventListener('click', function (event) {
-    var tagName = document.querySelector('#tagName').value.trim();
-    var abi = document.querySelector('#tagAbi').value.trim();
-    var txHash = document.querySelector('#tagTxHash').value.trim();
+  qs('#submitTag').addEventListener('click', function (event) {
+    var tagName = qs('#tagName').value.trim();
+    var abi = qs('#tagAbi').value.trim();
+    var txHash = qs('#tagTxHash').value.trim();
 
     if (!/^[\w\s]+$/g.test(tagName)) {
       alert('Invlid tag name.');
@@ -1082,8 +1075,7 @@ var PageCount = 10;
 })();
 
 function renderTag(tag) {
-  var tags = document.querySelector('#tags');
-  var tagTemplate = tags.childNodes[1].textContent;
+  var tags = qs('#tags');
   var html = renderTemplate(tag, tagTemplate);
   var div = document.createElement('div');
   div.innerHTML = html;
@@ -1102,14 +1094,14 @@ function renderTemplate(obj, template) {
 }
 
 function renderSummary(ready) {
-  var summary = document.querySelector('#seSummary');
+  var summary = qs('#seSummary');
   var sumTemplate = summary.childNodes[1].textContent;
   var html = renderTemplate(ready, sumTemplate);
   summary.innerHTML = html;
 }
 
 function renderSearchResults(data, page) {
-  var searchResults = document.querySelector('#searchResults');
+  var searchResults = qs('#searchResults');
   var title = document.createElement('h4');
   var count = document.createTextNode(data.length + (data.length === 1 ? ' Result' : ' Results'));
   title.appendChild(count);
@@ -1210,7 +1202,7 @@ function renderPage(data, page) {
     appendPageNumber(data, pageElement, 'Next', page + 1);
   }
 
-  document.querySelector('#searchResults').appendChild(pageElement);
+  qs('#searchResults').appendChild(pageElement);
 }
 
 function appendPageNumber(data, pageElement, text, pageNumber) {
@@ -1218,7 +1210,7 @@ function appendPageNumber(data, pageElement, text, pageNumber) {
 
   if (pageNumber >= 0) {
     link.childNodes[0].addEventListener('click', function (event) {
-      document.querySelector('#searchResults').innerHTML = '';
+      qs('#searchResults').innerHTML = '';
       renderSearchResults(data, pageNumber);
       event.preventDefault();
     });
@@ -1229,14 +1221,14 @@ function appendPageNumber(data, pageElement, text, pageNumber) {
 }
 
 function searchUsingKeywords() {
-  document.querySelector('#searchResults').innerHTML = '';
-  var activeTagButton = document.querySelector('#tags .btn.active');
+  qs('#searchResults').innerHTML = '';
+  var activeTagButton = qs('#tags .btn.active');
 
   if (activeTagButton) {
     activeTagButton.classList.remove('active');
   }
 
-  var q = document.querySelector('#searchInput').value;
+  var q = qs('#searchInput').value;
 
   if (!q || /^\s*$/g.test(q)) {
     return;
@@ -1256,7 +1248,7 @@ function searchUsingKeywords() {
 }
 
 function noResult() {
-  document.querySelector('#searchResults').innerHTML = '<h4>No result</h4>';
+  qs('#searchResults').innerHTML = '<h4>No result</h4>';
 }
 },{"./abis":"SsOS","./env/etc":"pFhC","./es-ss":"0HzC"}]},{},["ZCfc"], null)
-//# sourceMappingURL=/main.7f610ecd.js.map
+//# sourceMappingURL=/main.3f46fc3e.js.map
