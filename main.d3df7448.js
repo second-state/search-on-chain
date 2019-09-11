@@ -117,7 +117,28 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"SsOS":[function(require,module,exports) {
+})({"8wWJ":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+function renderTemplate(obj, template) {
+  var result = template;
+
+  for (var k in obj) {
+    var rk = new RegExp("{" + k + "}", 'g');
+    result = result.replace(rk, obj[k]);
+  }
+
+  return result;
+}
+
+exports.renderTemplate = renderTemplate;
+var qs = document.querySelector.bind(document);
+exports.qs = qs;
+},{}],"gqc0":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -294,6 +315,17 @@ exports.default = [{
     "type": "event"
   }]
 }];
+},{}],"NOJ5":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  LS_NAME: 'soc',
+  PAGE_COUNT: 10,
+  VIS_PAGE_NUMBER: 4
+};
 },{}],"pFhC":[function(require,module,exports) {
 "use strict";
 
@@ -303,7 +335,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = {
   ES_API: 'https://etc.search.secondstate.io'
 };
-},{}],"0HzC":[function(require,module,exports) {
+},{}],"NGGe":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -862,7 +894,264 @@ function () {
 
 var _default = ESSS;
 exports.default = _default;
-},{}],"ZCfc":[function(require,module,exports) {
+},{}],"xmoD":[function(require,module,exports) {
+"use strict";
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var etc_1 = __importDefault(require("../env/etc"));
+
+var es_ss_1 = __importDefault(require("./es-ss"));
+
+var es = new es_ss_1.default(etc_1.default.ES_API);
+exports.default = {
+  searchAbi: function searchAbi(abi, cb) {
+    es.shaAbi(JSON.stringify(abi)).then(function (data) {
+      var d = JSON.parse(data);
+
+      if (d.abiSha3) {
+        es.searchUsingAbi(d.abiSha3).then(function (data) {
+          cb(JSON.parse(data));
+        }).catch(function (e) {
+          console.log(e);
+          alert('Error occured.');
+        });
+      }
+    }).catch(function (e) {
+      console.log(e);
+      alert('Error occured.');
+    });
+  },
+  searchKeywords: function searchKeywords(keywords, cb) {
+    es.searchUsingKeywords({
+      keywords: [keywords]
+    }).then(function (data) {
+      cb(JSON.parse(data));
+    }).catch(function (e) {
+      console.log(e);
+      alert('Error occured.');
+    });
+  },
+  submitAbi: function submitAbi(abi, txHash, cb) {
+    es.submitAbi(JSON.stringify(abi), txHash).then(function (data) {
+      cb(JSON.parse(data));
+    }).catch(function (e) {
+      console.log(e);
+      alert('Error occured while submitting the abi.');
+    });
+  },
+  getAbiCount: function getAbiCount(cb) {
+    es.getAbiCount().then(function (data) {
+      cb(data);
+    });
+  },
+  getAllCount: function getAllCount(cb) {
+    es.getAllCount().then(function (data) {
+      cb(data);
+    });
+  },
+  getContractCount: function getContractCount(cb) {
+    es.getContractCount().then(function (data) {
+      cb(data);
+    });
+  }
+};
+},{"../env/etc":"pFhC","./es-ss":"NGGe"}],"3SV9":[function(require,module,exports) {
+"use strict";
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var utils_1 = require("../utils/utils");
+
+var constants_1 = __importDefault(require("../static/constants"));
+
+var searchResults_1 = __importDefault(require("./searchResults"));
+
+var div = document.createElement('div');
+div.innerHTML = utils_1.qs('#searchResults').childNodes[3].textContent;
+var PgTemplateElement = div.children[0];
+var PgLinkTemplateElement = PgTemplateElement.querySelectorAll('li');
+
+function appendPageNumber(pageElement, text, pageNumber) {
+  var link = PgLinkTemplateElement[pageNumber < 0 ? pageNumber * -1 : 0].cloneNode(true);
+
+  if (pageNumber >= 0) {
+    link.childNodes[0].addEventListener('click', function (event) {
+      searchResults_1.default.Instance.clear();
+      searchResults_1.default.Instance.render(pageNumber);
+      event.preventDefault();
+    });
+  }
+
+  link.childNodes[0].textContent = text;
+  pageElement.childNodes[1].appendChild(link);
+}
+
+function Pagination(totalCount, current) {
+  var pageElement = PgTemplateElement.cloneNode(true);
+  var toBeRemoved = pageElement.childNodes[1].childNodes;
+
+  for (var i = toBeRemoved.length - 1; i >= 0; i--) {
+    pageElement.childNodes[1].removeChild(toBeRemoved[i]);
+  }
+
+  var EndPageNumber = Math.floor((totalCount - 1) / constants_1.default.PAGE_COUNT);
+
+  if (current === 0) {
+    appendPageNumber(pageElement, 'Previous', -2);
+  } else {
+    appendPageNumber(pageElement, 'Previous', current - 1);
+  }
+
+  var startPage = current - constants_1.default.VIS_PAGE_NUMBER / 2;
+  var endPage = current + constants_1.default.VIS_PAGE_NUMBER / 2;
+
+  if (startPage < 0) {
+    startPage = 0;
+    endPage = startPage + constants_1.default.VIS_PAGE_NUMBER;
+
+    if (endPage > EndPageNumber) {
+      endPage = EndPageNumber;
+    }
+  } else {
+    if (endPage > EndPageNumber) {
+      endPage = EndPageNumber;
+      startPage = endPage - constants_1.default.VIS_PAGE_NUMBER;
+
+      if (startPage < 0) {
+        startPage = 0;
+      }
+    }
+  }
+
+  if (startPage > 0) {
+    appendPageNumber(pageElement, '1', 0);
+
+    if (startPage === 2) {
+      appendPageNumber(pageElement, '2', 1);
+    } else if (startPage > 2) {
+      appendPageNumber(pageElement, '...', current - constants_1.default.VIS_PAGE_NUMBER / 2 - 2);
+    }
+  }
+
+  for (var i = startPage; i <= endPage; i++) {
+    appendPageNumber(pageElement, "" + (i + 1), i === current ? -1 : i);
+  }
+
+  if (endPage < EndPageNumber) {
+    if (endPage < EndPageNumber - 2) {
+      appendPageNumber(pageElement, '...', current + constants_1.default.VIS_PAGE_NUMBER / 2 + 2);
+    } else if (endPage === EndPageNumber - 2) {
+      appendPageNumber(pageElement, "" + EndPageNumber, EndPageNumber - 1);
+    }
+
+    appendPageNumber(pageElement, "" + (EndPageNumber + 1), EndPageNumber);
+  }
+
+  var nextLink;
+
+  if (current === EndPageNumber) {
+    appendPageNumber(pageElement, 'Next', -2);
+  } else {
+    appendPageNumber(pageElement, 'Next', current + 1);
+  }
+
+  utils_1.qs('#searchResults').appendChild(pageElement);
+}
+
+exports.default = Pagination;
+},{"../utils/utils":"8wWJ","../static/constants":"NOJ5","./searchResults":"7co4"}],"7co4":[function(require,module,exports) {
+"use strict";
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var utils_1 = require("../utils/utils");
+
+var constants_1 = __importDefault(require("../static/constants"));
+
+var pagination_1 = __importDefault(require("./pagination"));
+
+var SearchResults =
+/** @class */
+function () {
+  function SearchResults(data) {
+    this.data = data;
+    this.render(0);
+    SearchResults.Instance = this;
+  }
+
+  SearchResults.prototype.clear = function () {
+    utils_1.qs('#searchResults').innerHTML = '';
+  };
+
+  SearchResults.prototype.render = function (page) {
+    var searchResults = utils_1.qs('#searchResults');
+
+    if (!this.data || this.data.length === 0) {
+      searchResults.innerHTML = '<h4>No result</h4>';
+      return;
+    }
+
+    var title = document.createElement('h4');
+    var count = document.createTextNode(this.data.length + (this.data.length === 1 ? ' Result' : ' Results'));
+    title.appendChild(count);
+    searchResults.appendChild(title);
+    var pageData = this.data.slice(page * constants_1.default.PAGE_COUNT, (page + 1) * constants_1.default.PAGE_COUNT);
+    pageData.forEach(function (d) {
+      var html = utils_1.renderTemplate(d, SearchResults.Template);
+      var div = document.createElement('div');
+      div.innerHTML = html;
+      var sr = div.children[0];
+      searchResults.appendChild(sr);
+      var dtt = sr.querySelector('dt');
+      var ddt = sr.querySelector('dd');
+      var fd = d.functionData;
+
+      for (var k in fd) {
+        var dt = dtt.cloneNode();
+        dt.textContent = k;
+        var dd = ddt.cloneNode();
+        dd.textContent = fd[k];
+        dtt.parentElement.appendChild(dt);
+        dtt.parentElement.appendChild(dd);
+      }
+    });
+
+    if (this.data.length > constants_1.default.PAGE_COUNT) {
+      pagination_1.default(this.data.length, page);
+    }
+  };
+
+  SearchResults.Template = utils_1.qs('#searchResults').childNodes[1].textContent;
+  return SearchResults;
+}();
+
+exports.default = SearchResults;
+},{"../utils/utils":"8wWJ","../static/constants":"NOJ5","./pagination":"3SV9"}],"tjhc":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -877,156 +1166,119 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var abis_1 = __importDefault(require("./abis"));
+var utils_1 = require("../utils/utils");
 
-var etc_1 = __importDefault(require("./env/etc"));
+var abis_1 = __importDefault(require("../static/abis"));
 
-var es_ss_1 = __importDefault(require("./es-ss"));
+var constants_1 = __importDefault(require("../static/constants"));
 
-var es = new es_ss_1.default(etc_1.default.ES_API);
-var LS_NAME = 'soc';
-var AllTags = abis_1.default;
-var qs = document.querySelector.bind(document);
-var tagTemplate = qs('#tags').childNodes[1].textContent;
-var srTemplate = qs('#searchResults').childNodes[1].textContent;
-var div = document.createElement('div');
-div.innerHTML = qs('#searchResults').childNodes[3].textContent;
-var pgTemplateElement = div.children[0];
-var pgLinkTemplateElement = pgTemplateElement.querySelectorAll('li');
-var PageCount = 10;
+var es_1 = __importDefault(require("../utils/es"));
 
-(function init() {
-  var lsTags = window.localStorage.getItem(LS_NAME);
+var searchResults_1 = __importDefault(require("./searchResults"));
 
-  if (lsTags !== null) {
-    lsTags = JSON.parse(lsTags);
-    AllTags = AllTags.concat(lsTags);
+var Tag =
+/** @class */
+function () {
+  function Tag(name, abi) {
+    var _this = this;
+
+    this.name = name;
+    this.abi = abi;
+    var tags = utils_1.qs('#tags');
+    var html = utils_1.renderTemplate({
+      name: this.name
+    }, Tag.Template);
+    var div = document.createElement('div');
+    div.innerHTML = html;
+    this.dom = div.children[0];
+    tags.appendChild(this.dom);
+    this.dom.querySelector('button').addEventListener('click', function () {
+      if (_this.dom.querySelector('button').classList.contains('active')) {
+        return;
+      }
+
+      Tag.ActiveTag && Tag.ActiveTag.deactivate();
+
+      _this.activate();
+
+      searchResults_1.default.Instance.clear();
+      es_1.default.searchAbi(_this.abi, function (d) {
+        _this.count = d.length;
+        new searchResults_1.default(d);
+      });
+    });
   }
 
-  AllTags.forEach(function (tag, index) {
-    renderTag(tag);
-    es.shaAbi(JSON.stringify(tag.abi)).then(function (data) {
-      data = JSON.parse(data);
-
-      if (data.abiSha3) {
-        es.searchUsingAbi(data.abiSha3).then(function (data) {
-          data = JSON.parse(data);
-          qs("#count_" + tag.name).textContent = data.length;
-
-          if (index === 0) {
-            qs("#count_" + tag.name).parentElement.classList.add('active');
-
-            if (data.length > 0) {
-              renderSearchResults(data, 0);
-            }
-          }
-        }).catch(function (e) {
-          console.log(e);
-          alert('Error occured.');
-        });
-      }
-    }).catch(function (e) {
-      console.log(e);
-      alert('Error occured.');
-    });
+  Object.defineProperty(Tag.prototype, "count", {
+    set: function set(c) {
+      this.dom.querySelector('.count-badge').textContent = c.toString();
+    },
+    enumerable: true,
+    configurable: true
   });
-  var ready = {
-    abiUploaded: 0,
-    contractCount: 0,
-    contractAdhered: 0,
-    count: 0
+
+  Tag.prototype.activate = function () {
+    this.dom.querySelector('button').classList.add('active');
+    Tag.ActiveTag = this;
   };
-  es.getAbiCount().then(function (data) {
-    ready.abiUploaded = data;
 
-    if (++ready.count === 3) {
-      renderSummary(ready);
-    }
-  });
-  es.getAllCount().then(function (data) {
-    ready.contractCount = data;
+  Tag.prototype.deactivate = function () {
+    this.dom.querySelector('button').classList.remove('active');
+    Tag.ActiveTag = null;
+  };
 
-    if (++ready.count === 3) {
-      renderSummary(ready);
-    }
-  });
-  es.getContractCount().then(function (data) {
-    ready.contractAdhered = data;
+  Tag.Template = utils_1.qs('#tags').childNodes[1].textContent;
+  return Tag;
+}();
 
-    if (++ready.count === 3) {
-      renderSummary(ready);
-    }
-  }); // event register
+exports.Tag = Tag;
 
-  qs('#searchButton').addEventListener('click', function () {
-    searchUsingKeywords();
-  });
-  qs('#searchInput').addEventListener('keypress', function (event) {
-    if (event.keyCode === 13) {
-      searchUsingKeywords();
-    }
-  });
-  qs('#tags').addEventListener('click', function (event) {
-    var target = event.target;
+function default_1() {
+  abis_1.default.forEach(function (t, i) {
+    var tag = new Tag(t.name, t.abi);
 
-    if (target.classList && (target.classList.contains('btn') || target.classList.contains('count-badge'))) {
-      if (target.classList.contains('count-badge')) {
-        target = target.parentElement;
-      }
-
-      var activeTagButton = qs('#tags .btn.active');
-
-      if (activeTagButton) {
-        activeTagButton.classList.remove('active');
-      }
-
-      target.classList.add('active');
-      qs('#searchResults').innerHTML = '';
-      var tag_1 = target.getAttribute('tag');
-      var abi_1 = [];
-      AllTags.forEach(function (t) {
-        if (t.name === tag_1) {
-          abi_1 = t.abi;
-        }
+    if (i === 0) {
+      tag.activate();
+      es_1.default.searchAbi(t.abi, function (d) {
+        tag.count = d.length;
+        new searchResults_1.default(d);
       });
-      es.shaAbi(JSON.stringify(abi_1)).then(function (data) {
-        data = JSON.parse(data);
-
-        if (data.abiSha3) {
-          es.searchUsingAbi(data.abiSha3).then(function (data) {
-            data = JSON.parse(data);
-
-            if (data.length > 0) {
-              qs("#count_" + tag_1).textContent = data.length;
-              renderSearchResults(data, 0);
-            } else {
-              noResult();
-            }
-          }).catch(function (e) {
-            console.log(e);
-            alert('Error occured.');
-          });
-        }
-      }).catch(function (e) {
-        console.log(e);
-        alert('Error occured.');
+    } else {
+      es_1.default.searchAbi(t.abi, function (d) {
+        tag.count = d.length;
       });
     }
   });
-  qs('#submitTag').addEventListener('click', function (event) {
-    var tagName = qs('#tagName').value.trim();
-    var abi = qs('#tagAbi').value.trim();
-    var txHash = qs('#tagTxHash').value.trim();
+  var lsTags = new Array();
+  var ls = window.localStorage.getItem(constants_1.default.LS_NAME);
+
+  if (ls !== null) {
+    var lt = JSON.parse(ls);
+    lt.forEach(function (t) {
+      var tag = new Tag(t.name, t.abi);
+      lsTags.push(tag);
+      es_1.default.searchAbi(t.abi, function (d) {
+        tag.count = d.length;
+      });
+    });
+  }
+
+  utils_1.qs('#submitTag').addEventListener('click', function (event) {
+    var tagName = utils_1.qs('#tagName').value.trim();
+    var abiStr = utils_1.qs('#tagAbi').value.trim();
+    var txHash = utils_1.qs('#tagTxHash').value.trim();
 
     if (!/^[\w\s]+$/g.test(tagName)) {
       alert('Invlid tag name.');
       return;
     }
 
-    try {
-      var t = JSON.parse(abi);
+    var abi;
 
-      if (_typeof(t) !== 'object') {
+    try {
+      abi = JSON.parse(abiStr);
+
+      if (_typeof(abi) !== 'object') {
         alert('Invalid abi');
         return;
       }
@@ -1040,215 +1292,157 @@ var PageCount = 10;
       return;
     }
 
-    for (var i = 0; i < AllTags.length; i++) {
-      if (AllTags[i].name === tagName) {
+    for (var i = 0; i < abis_1.default.length; i++) {
+      if (abis_1.default[i].name === tagName) {
         alert('Duplicated tagName.');
         return;
       }
     }
 
-    es.submitAbi(abi, txHash).then(function (data) {
-      data = JSON.parse(data);
-      var tags = window.localStorage.getItem(LS_NAME);
-
-      if (tags === null) {
-        tags = [];
-      } else {
-        tags = JSON.parse(tags);
+    for (var i = 0; i < lsTags.length; i++) {
+      if (lsTags[i].name === tagName) {
+        alert('Duplicated tagName.');
+        return;
       }
+    }
 
+    es_1.default.submitAbi(abi, txHash, function (d) {
       var tag = {
         name: tagName,
-        abi: JSON.parse(abi),
+        abi: abi,
         txHash: txHash
       };
-      renderTag(tag);
-      tags.push(tag);
-      AllTags.push(tag);
-      window.localStorage.setItem(LS_NAME, JSON.stringify(tags));
+      lsTags.push(new Tag(tagName, abi));
+      window.localStorage.setItem(constants_1.default.LS_NAME, JSON.stringify(lsTags));
       window.jQuery('#newTagModal').modal('hide');
-    }).catch(function (e) {
-      console.log(e);
-      alert('Error occured while submitting the abi.');
     });
   });
-})();
-
-function renderTag(tag) {
-  var tags = qs('#tags');
-  var html = renderTemplate(tag, tagTemplate);
-  var div = document.createElement('div');
-  div.innerHTML = html;
-  tags.appendChild(div.children[0]);
 }
 
-function renderTemplate(obj, template) {
-  var result = template;
+exports.default = default_1;
+},{"../utils/utils":"8wWJ","../static/abis":"gqc0","../static/constants":"NOJ5","../utils/es":"xmoD","./searchResults":"7co4"}],"SrDI":[function(require,module,exports) {
+"use strict";
 
-  for (var k in obj) {
-    var rk = new RegExp("{" + k + "}", 'g');
-    result = result.replace(rk, obj[k]);
-  }
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
 
-  return result;
-}
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var utils_1 = require("../utils/utils");
+
+var es_1 = __importDefault(require("../utils/es"));
 
 function renderSummary(ready) {
-  var summary = qs('#seSummary');
+  var summary = utils_1.qs('#seSummary');
   var sumTemplate = summary.childNodes[1].textContent;
-  var html = renderTemplate(ready, sumTemplate);
+  var html = utils_1.renderTemplate(ready, sumTemplate);
   summary.innerHTML = html;
 }
 
-function renderSearchResults(data, page) {
-  var searchResults = qs('#searchResults');
-  var title = document.createElement('h4');
-  var count = document.createTextNode(data.length + (data.length === 1 ? ' Result' : ' Results'));
-  title.appendChild(count);
-  searchResults.appendChild(title);
-  var pageData = data.slice(page * PageCount, (page + 1) * PageCount);
-  pageData.forEach(function (d) {
-    var html = renderTemplate(d, srTemplate);
-    var div = document.createElement('div');
-    div.innerHTML = html;
-    var sr = div.children[0];
-    searchResults.appendChild(sr);
-    var dtt = sr.querySelector('dt');
-    var ddt = sr.querySelector('dd');
-    var fd = d.functionData;
+function default_1() {
+  var ready = {
+    abiUploaded: 0,
+    contractCount: 0,
+    contractAdhered: 0,
+    count: 0
+  };
+  es_1.default.getAbiCount(function (d) {
+    ready.abiUploaded = d;
 
-    for (var k in fd) {
-      var dt = dtt.cloneNode();
-      dt.textContent = k;
-      var dd = ddt.cloneNode();
-      dd.textContent = fd[k];
-      dtt.parentElement.appendChild(dt);
-      dtt.parentElement.appendChild(dd);
+    if (++ready.count === 3) {
+      renderSummary(ready);
     }
   });
+  es_1.default.getAllCount(function (d) {
+    ready.contractCount = d;
 
-  if (data.length > PageCount) {
-    renderPage(data, page);
-  }
+    if (++ready.count === 3) {
+      renderSummary(ready);
+    }
+  });
+  es_1.default.getContractCount(function (d) {
+    ready.contractAdhered = d;
+
+    if (++ready.count === 3) {
+      renderSummary(ready);
+    }
+  });
 }
 
-function renderPage(data, page) {
-  var VisPageNumber = 4;
-  var pageElement = pgTemplateElement.cloneNode(true);
-  var toBeRemoved = pageElement.childNodes[1].childNodes;
+exports.default = default_1;
+},{"../utils/utils":"8wWJ","../utils/es":"xmoD"}],"rZ55":[function(require,module,exports) {
+"use strict";
 
-  for (var i = toBeRemoved.length - 1; i >= 0; i--) {
-    pageElement.childNodes[1].removeChild(toBeRemoved[i]);
-  }
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
 
-  var EndPageNumber = Math.floor((data.length - 1) / PageCount);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-  if (page === 0) {
-    appendPageNumber(data, pageElement, 'Previous', -2);
-  } else {
-    appendPageNumber(data, pageElement, 'Previous', page - 1);
-  }
+var utils_1 = require("../utils/utils");
 
-  var startPage = page - VisPageNumber / 2;
-  var endPage = page + VisPageNumber / 2;
+var es_1 = __importDefault(require("../utils/es"));
 
-  if (startPage < 0) {
-    startPage = 0;
-    endPage = startPage + VisPageNumber;
+var tag_1 = require("./tag");
 
-    if (endPage > EndPageNumber) {
-      endPage = EndPageNumber;
-    }
-  } else {
-    if (endPage > EndPageNumber) {
-      endPage = EndPageNumber;
-      startPage = endPage - VisPageNumber;
-
-      if (startPage < 0) {
-        startPage = 0;
-      }
-    }
-  }
-
-  if (startPage > 0) {
-    appendPageNumber(data, pageElement, '1', 0);
-
-    if (startPage === 2) {
-      appendPageNumber(data, pageElement, '2', 1);
-    } else if (startPage > 2) {
-      appendPageNumber(data, pageElement, '...', page - VisPageNumber / 2 - 2);
-    }
-  }
-
-  for (var i = startPage; i <= endPage; i++) {
-    appendPageNumber(data, pageElement, "" + (i + 1), i === page ? -1 : i);
-  }
-
-  if (endPage < EndPageNumber) {
-    if (endPage < EndPageNumber - 2) {
-      appendPageNumber(data, pageElement, '...', page + VisPageNumber / 2 + 2);
-    } else if (endPage === EndPageNumber - 2) {
-      appendPageNumber(data, pageElement, "" + EndPageNumber, EndPageNumber - 1);
-    }
-
-    appendPageNumber(data, pageElement, "" + (EndPageNumber + 1), EndPageNumber);
-  }
-
-  var nextLink;
-
-  if (page === EndPageNumber) {
-    appendPageNumber(data, pageElement, 'Next', -2);
-  } else {
-    appendPageNumber(data, pageElement, 'Next', page + 1);
-  }
-
-  qs('#searchResults').appendChild(pageElement);
-}
-
-function appendPageNumber(data, pageElement, text, pageNumber) {
-  var link = pgLinkTemplateElement[pageNumber < 0 ? pageNumber * -1 : 0].cloneNode(true);
-
-  if (pageNumber >= 0) {
-    link.childNodes[0].addEventListener('click', function (event) {
-      qs('#searchResults').innerHTML = '';
-      renderSearchResults(data, pageNumber);
-      event.preventDefault();
-    });
-  }
-
-  link.childNodes[0].textContent = text;
-  pageElement.childNodes[1].appendChild(link);
-}
+var searchResults_1 = __importDefault(require("./searchResults"));
 
 function searchUsingKeywords() {
-  qs('#searchResults').innerHTML = '';
-  var activeTagButton = qs('#tags .btn.active');
-
-  if (activeTagButton) {
-    activeTagButton.classList.remove('active');
-  }
-
-  var q = qs('#searchInput').value;
+  tag_1.Tag.ActiveTag && tag_1.Tag.ActiveTag.deactivate();
+  var q = utils_1.qs('#searchInput').value;
 
   if (!q || /^\s*$/g.test(q)) {
     return;
   }
 
-  es.searchUsingKeywords({
-    keywords: [q]
-  }).then(function (data) {
-    data = JSON.parse(data);
+  searchResults_1.default.Instance.clear();
+  es_1.default.searchKeywords(q, function (d) {
+    new searchResults_1.default(d);
+  });
+}
 
-    if (data.length > 0) {
-      renderSearchResults(data, 0);
-    } else {
-      noResult();
+function default_1() {
+  utils_1.qs('#searchButton').addEventListener('click', function () {
+    searchUsingKeywords();
+  });
+  utils_1.qs('#searchInput').addEventListener('keypress', function (event) {
+    if (event.keyCode === 13) {
+      searchUsingKeywords();
     }
   });
 }
 
-function noResult() {
-  qs('#searchResults').innerHTML = '<h4>No result</h4>';
-}
-},{"./abis":"SsOS","./env/etc":"pFhC","./es-ss":"0HzC"}]},{},["ZCfc"], null)
-//# sourceMappingURL=/main.3f46fc3e.js.map
+exports.default = default_1;
+},{"../utils/utils":"8wWJ","../utils/es":"xmoD","./tag":"tjhc","./searchResults":"7co4"}],"ZCfc":[function(require,module,exports) {
+"use strict";
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var tag_1 = __importDefault(require("./components/tag"));
+
+var summary_1 = __importDefault(require("./components/summary"));
+
+var search_1 = __importDefault(require("./components/search"));
+
+summary_1.default();
+tag_1.default();
+search_1.default();
+},{"./components/tag":"tjhc","./components/summary":"SrDI","./components/search":"rZ55"}]},{},["ZCfc"], null)
+//# sourceMappingURL=/main.d3df7448.js.map
