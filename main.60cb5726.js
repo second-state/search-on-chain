@@ -1201,11 +1201,16 @@ function () {
 
       _this.activate();
 
-      searchResults_1.default.Instance.clear();
+      searchResults_1.default.Instance && searchResults_1.default.Instance.clear();
       es_1.default.searchAbi(_this.abi, function (d) {
         _this.count = d.length;
         new searchResults_1.default(d);
       });
+    });
+    this.dom.querySelector('.close-badge').addEventListener('click', function () {
+      _this.removed = true;
+
+      _this.dom.remove();
     });
   }
 
@@ -1217,6 +1222,10 @@ function () {
     configurable: true
   });
 
+  Tag.prototype.preserve = function () {
+    this.dom.classList.add('preserved');
+  };
+
   Tag.prototype.activate = function () {
     this.dom.querySelector('button').classList.add('active');
     Tag.ActiveTag = this;
@@ -1225,6 +1234,21 @@ function () {
   Tag.prototype.deactivate = function () {
     this.dom.querySelector('button').classList.remove('active');
     Tag.ActiveTag = null;
+  };
+
+  Tag.prototype.disable = function () {
+    this.dom.querySelector('button').setAttribute('disabled', 'disabled');
+  };
+
+  Tag.prototype.enable = function () {
+    this.dom.querySelector('button').removeAttribute('disabled');
+  };
+
+  Tag.prototype.toJSON = function () {
+    return {
+      name: this.name,
+      abi: this.abi
+    };
   };
 
   Tag.Template = utils_1.qs('#tags').childNodes[1].textContent;
@@ -1236,6 +1260,7 @@ exports.Tag = Tag;
 function default_1() {
   abis_1.default.forEach(function (t, i) {
     var tag = new Tag(t.name, t.abi);
+    tag.preserve();
 
     if (i === 0) {
       tag.activate();
@@ -1254,6 +1279,11 @@ function default_1() {
 
   if (ls !== null) {
     var lt = JSON.parse(ls);
+
+    if (lt.length > 0) {
+      utils_1.qs('#editTags').style.display = 'inline';
+    }
+
     lt.forEach(function (t) {
       var tag = new Tag(t.name, t.abi);
       lsTags.push(tag);
@@ -1263,7 +1293,40 @@ function default_1() {
     });
   }
 
-  utils_1.qs('#submitTag').addEventListener('click', function (event) {
+  var editing = false;
+  utils_1.qs('#editTags').addEventListener('click', function () {
+    if (!editing) {
+      this.textContent = 'Done';
+      utils_1.qs('#tags').classList.add('editing');
+      utils_1.qs('#addTag').setAttribute('disabled', 'disabled');
+      lsTags.forEach(function (t) {
+        t.disable();
+      });
+      editing = true;
+    } else {
+      this.textContent = 'Edit Tags';
+      utils_1.qs('#tags').classList.remove('editing');
+      utils_1.qs('#addTag').removeAttribute('disabled');
+
+      for (var i = lsTags.length - 1; i >= 0; i--) {
+        var t = lsTags[i];
+
+        if (t.removed) {
+          lsTags.splice(i, 1);
+        } else {
+          t.enable();
+        }
+      }
+
+      if (lsTags.length === 0) {
+        utils_1.qs('#editTags').style.display = 'none';
+      }
+
+      window.localStorage.setItem(constants_1.default.LS_NAME, JSON.stringify(lsTags));
+      editing = false;
+    }
+  });
+  utils_1.qs('#submitTag').addEventListener('click', function () {
     var tagName = utils_1.qs('#tagName').value.trim();
     var abiStr = utils_1.qs('#tagAbi').value.trim();
     var txHash = utils_1.qs('#tagTxHash').value.trim();
@@ -1294,14 +1357,14 @@ function default_1() {
 
     for (var i = 0; i < abis_1.default.length; i++) {
       if (abis_1.default[i].name === tagName) {
-        alert('Duplicated tagName.');
+        alert('Duplicated tag name.');
         return;
       }
     }
 
     for (var i = 0; i < lsTags.length; i++) {
       if (lsTags[i].name === tagName) {
-        alert('Duplicated tagName.');
+        alert('Duplicated tag name.');
         return;
       }
     }
@@ -1314,6 +1377,8 @@ function default_1() {
       };
       lsTags.push(new Tag(tagName, abi));
       window.localStorage.setItem(constants_1.default.LS_NAME, JSON.stringify(lsTags));
+      utils_1.qs('#editTags').style.display = 'inline';
+      utils_1.qs('#newTagModal form').reset();
       window.jQuery('#newTagModal').modal('hide');
     });
   });
@@ -1404,7 +1469,7 @@ function searchUsingKeywords() {
     return;
   }
 
-  searchResults_1.default.Instance.clear();
+  searchResults_1.default.Instance && searchResults_1.default.Instance.clear();
   es_1.default.searchKeywords(q, function (d) {
     new searchResults_1.default(d);
   });
@@ -1445,4 +1510,4 @@ summary_1.default();
 tag_1.default();
 search_1.default();
 },{"./components/tag":"tjhc","./components/summary":"SrDI","./components/search":"rZ55"}]},{},["ZCfc"], null)
-//# sourceMappingURL=/main.d3df7448.js.map
+//# sourceMappingURL=/main.60cb5726.js.map

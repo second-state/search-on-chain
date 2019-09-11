@@ -186,11 +186,31 @@ h4 {
   flex-grow: 0;
   margin-bottom: 1rem;
 }
+.tags .tag .close-badge {
+  display: none;
+}
+.tags .editing .tag.preserved {
+  display: none;
+}
+.tags .editing .tag .count-badge {
+  display: none;
+}
+.tags .editing .tag .close-badge {
+  display: inline;
+  cursor: pointer;
+}
 .tags .btn {
   white-space: nowrap;
 }
+.tags .add-tag {
+  display: flex;
+}
 .tags .add-tag > .btn {
-  width: 100%;
+  flex-grow: 1;
+}
+.tags .add-tag > .btn:last-of-type {
+  display: none;
+  margin-left: 1rem;
 }
 
 footer {
@@ -234,4 +254,4 @@ footer .ss-figure {
   width: 70px;
 }
 
-/*# sourceMappingURL=/main.37d69a38.css.map */
+/*# sourceMappingURL=/main.949cd0f8.css.map */

@@ -7,7 +7,7 @@
     <!--[if IE]><link rel="icon" href="/favicon.ico"><![endif]-->
     <title>Search On Chain</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="/main.37d69a38.css">
+    <link rel="stylesheet" href="/main.949cd0f8.css">
   </head>
   <body>
     <header class="navbar">
@@ -83,12 +83,14 @@
                 <div class="tag col">
                   <button tag="{name}" type="button" class="btn btn-sm btn-outline-info">
                     {name} <span class="badge badge-light count-badge"></span>
+                    <span class="badge badge-light close-badge">&times;</span>
                   </button>
                 </div>
               -->
             </div>
             <div class="add-tag">
-              <button type="button" class="btn btn-sm btn-light" data-toggle="modal" data-target="#newTagModal">Add Tag</button>
+              <button id="addTag" type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#newTagModal">Add Tag</button>
+              <button id="editTags" type="button" class="btn btn-sm btn-light">Edit Tags</button>
               <div class="modal fade" id="newTagModal" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
@@ -157,6 +159,6 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="/main.d3df7448.js"></script>
+    <script src="/main.60cb5726.js"></script>
   </body>
 </html>
