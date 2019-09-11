@@ -4,6 +4,7 @@ node_js:
 
 script:
   - yarn build
+  - echo 'etc.blockchainsear.ch' > ./dist/CNAME
 
 deploy:
   provider: pages
