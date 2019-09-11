@@ -192,16 +192,35 @@ h4 {
   .tag {
     flex-grow: 0;
     margin-bottom: 1rem;
+    .close-badge {
+      display: none;
+    }
+  }
+  .editing {
+    .tag {
+      &.preserved {
+        display: none;
+      }
+      .count-badge {
+        display: none;
+      }
+      .close-badge {
+        display: inline;
+        cursor: pointer;
+      }
+    }
   }
   .btn {
     white-space: nowrap;
-    // max-width: 100%;
-    // overflow: hidden;
-    // text-overflow: ellipsis;
   }
   .add-tag {
+    display: flex;
     > .btn {
-      width: 100%;
+      flex-grow: 1;
+      &:last-of-type {
+        display: none;
+        margin-left: 1rem;
+      }
     }
   }
 }

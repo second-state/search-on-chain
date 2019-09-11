@@ -83,12 +83,14 @@
                 <div class="tag col">
                   <button tag="{name}" type="button" class="btn btn-sm btn-outline-info">
                     {name} <span class="badge badge-light count-badge"></span>
+                    <span class="badge badge-light close-badge">&times;</span>
                   </button>
                 </div>
               -->
             </div>
             <div class="add-tag">
-              <button type="button" class="btn btn-sm btn-light" data-toggle="modal" data-target="#newTagModal">Add Tag</button>
+              <button id="addTag" type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#newTagModal">Add Tag</button>
+              <button id="editTags" type="button" class="btn btn-sm btn-light">Edit Tags</button>
               <div class="modal fade" id="newTagModal" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">

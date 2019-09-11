@@ -9,7 +9,7 @@ function searchUsingKeywords() {
   if (!q || /^\s*$/g.test(q)) {
     return;
   }
-  SearchResults.Instance.clear();
+  SearchResults.Instance && SearchResults.Instance.clear();
   ES.searchKeywords(q, d => {
     new SearchResults(d);
   });

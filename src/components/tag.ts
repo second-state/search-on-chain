@@ -15,6 +15,7 @@ class Tag {
     this.dom.querySelector('.count-badge').textContent = c.toString();
   }
 
+  public removed: boolean;
   private dom: Element;
 
   constructor(name: string, abi: Array<object>) {
@@ -34,12 +35,21 @@ class Tag {
       }
       Tag.ActiveTag && Tag.ActiveTag.deactivate();
       this.activate();
-      SearchResults.Instance.clear();
+      SearchResults.Instance && SearchResults.Instance.clear();
       ES.searchAbi(this.abi, d => {
         this.count = d.length;
         new SearchResults(d);
       });
     });
+
+    this.dom.querySelector('.close-badge').addEventListener('click', () => {
+      this.removed = true;
+      this.dom.remove();
+    });
+  }
+
+  public preserve() {
+    this.dom.classList.add('preserved');
   }
 
   public activate() {
@@ -51,11 +61,24 @@ class Tag {
     this.dom.querySelector('button').classList.remove('active');
     Tag.ActiveTag = null;
   }
+
+  public disable() {
+    this.dom.querySelector('button').setAttribute('disabled', 'disabled');
+  }
+
+  public enable() {
+    this.dom.querySelector('button').removeAttribute('disabled');
+  }
+
+  public toJSON() {
+    return {name: this.name, abi: this.abi};
+  }
 }
 
 export default function() {
   PreTags.forEach((t, i) => {
     const tag = new Tag(t.name, t.abi);
+    tag.preserve();
     if (i === 0) {
       tag.activate();
       ES.searchAbi(t.abi, d => {
@@ -74,6 +97,9 @@ export default function() {
   let ls: string|null = window.localStorage.getItem(C.LS_NAME);
   if (ls !== null) {
     const lt = JSON.parse(ls);
+    if (lt.length > 0) {
+      qs('#editTags').style.display = 'inline';
+    }
     lt.forEach(t => {
       const tag = new Tag(t.name, t.abi);
       lsTags.push(tag);
@@ -83,7 +109,39 @@ export default function() {
     });
   }
 
-  qs('#submitTag').addEventListener('click', (event) => {
+  let editing = false;
+  qs('#editTags').addEventListener('click', function() {
+    if (!editing) {
+      this.textContent = 'Done';
+      qs('#tags').classList.add('editing');
+      qs('#addTag').setAttribute('disabled', 'disabled');
+
+      lsTags.forEach(t => {
+        t.disable();
+      });
+      editing = true;
+    } else {
+      this.textContent = 'Edit Tags';
+      qs('#tags').classList.remove('editing');
+      qs('#addTag').removeAttribute('disabled');
+
+      for (let i = lsTags.length-1; i >= 0; i--) {
+        let t = lsTags[i];
+        if (t.removed) {
+          lsTags.splice(i, 1);
+        } else {
+          t.enable();
+        }
+      }
+      if (lsTags.length === 0) {
+        qs('#editTags').style.display = 'none';
+      }
+      window.localStorage.setItem(C.LS_NAME, JSON.stringify(lsTags));
+      editing = false;
+    }
+  });
+
+  qs('#submitTag').addEventListener('click', () => {
     const tagName = (qs('#tagName') as HTMLInputElement).value.trim();
     const abiStr = (qs('#tagAbi') as HTMLInputElement).value.trim();
     const txHash = (qs('#tagTxHash') as HTMLInputElement).value.trim();
@@ -112,14 +170,14 @@ export default function() {
 
     for (let i = 0; i < PreTags.length; i++) {
       if (PreTags[i].name === tagName) {
-        alert('Duplicated tagName.');
+        alert('Duplicated tag name.');
         return;
       }
     }
 
     for (let i = 0; i < lsTags.length; i++) {
       if (lsTags[i].name === tagName) {
-        alert('Duplicated tagName.');
+        alert('Duplicated tag name.');
         return;
       }
     }
@@ -132,6 +190,8 @@ export default function() {
       };
       lsTags.push(new Tag(tagName, abi));
       window.localStorage.setItem(C.LS_NAME, JSON.stringify(lsTags));
+      qs('#editTags').style.display = 'inline';
+      qs('#newTagModal form').reset();
       ((window as any).jQuery('#newTagModal') as any).modal('hide');
     });
   });
