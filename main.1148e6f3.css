@@ -242,4 +242,19 @@ footer .ss-figure {
   width: 70px;
 }
 
-/*# sourceMappingURL=/main.34c85e9e.css.map */
+.toast-wrapper {
+  position: absolute;
+  top: 0;
+  right: 1rem;
+  z-index: 5;
+}
+.toast-wrapper .toast-body {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.toast-wrapper .close {
+  font-size: 0.75rem;
+  font-weight: normal;
+}
+
+/*# sourceMappingURL=/main.1148e6f3.css.map */

@@ -323,6 +323,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = {
   LS_NAME: 'soc',
+  LS_SETTING: 'soc.setting',
   PAGE_COUNT: 10,
   VIS_PAGE_NUMBER: 4
 };
@@ -930,6 +931,14 @@ exports.default = {
       alert('Error occured.');
     });
   },
+  searchDsl: function searchDsl(dsl, cb) {
+    es.queryUsingDsl(dsl).then(function (data) {
+      cb(JSON.parse(data));
+    }).catch(function (e) {
+      console.log(e);
+      alert('Error occured.');
+    });
+  },
   searchKeywords: function searchKeywords(keywords, cb) {
     es.searchUsingKeywords({
       keywords: [keywords]
@@ -1461,6 +1470,34 @@ var tag_1 = require("./tag");
 
 var searchResults_1 = __importDefault(require("./searchResults"));
 
+var DslTemplate = {
+  "query": {
+    "bool": {
+      "must": [{
+        "match": {}
+      }]
+    }
+  }
+};
+var FieldsMapping = {
+  txhash: 'TxHash',
+  block: 'blockNumber',
+  contract: 'contractAddress',
+  creator: 'creator'
+};
+
+function filterDsl(q) {
+  var m = /^([a-zA-Z]+)\:(.+)$/g.exec(q);
+
+  if (!m || m.length !== 3 || !FieldsMapping[m[1].toLowerCase()]) {
+    return null;
+  }
+
+  var dsl = JSON.parse(JSON.stringify(DslTemplate));
+  dsl.query.bool.must[0].match[FieldsMapping[m[1].toLowerCase()]] = m[2].trim();
+  return dsl;
+}
+
 function searchUsingKeywords() {
   tag_1.Tag.ActiveTag && tag_1.Tag.ActiveTag.deactivate();
   var q = utils_1.qs('#searchInput').value;
@@ -1469,11 +1506,22 @@ function searchUsingKeywords() {
     return;
   }
 
+  q = q.trim();
+  var dsl = filterDsl(q);
   searchResults_1.default.Instance && searchResults_1.default.Instance.clear();
-  es_1.default.searchKeywords(q, function (d) {
-    new searchResults_1.default(d);
-  });
+
+  if (dsl === null) {
+    es_1.default.searchKeywords(q, function (d) {
+      new searchResults_1.default(d);
+    });
+  } else {
+    es_1.default.searchDsl(dsl, function (d) {
+      new searchResults_1.default(d);
+    });
+  }
 }
+
+exports.search = searchUsingKeywords;
 
 function default_1() {
   utils_1.qs('#searchButton').addEventListener('click', function () {
@@ -1487,7 +1535,84 @@ function default_1() {
 }
 
 exports.default = default_1;
-},{"../utils/utils":"8wWJ","../utils/es":"xmoD","./tag":"tjhc","./searchResults":"7co4"}],"ZCfc":[function(require,module,exports) {
+},{"../utils/utils":"8wWJ","../utils/es":"xmoD","./tag":"tjhc","./searchResults":"7co4"}],"pIsK":[function(require,module,exports) {
+"use strict";
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var utils_1 = require("../utils/utils");
+
+var search_1 = require("./search");
+
+var constants_1 = __importDefault(require("../static/constants"));
+
+function default_1() {
+  var web3 = window.web3;
+  var ethereum = window.ethereum;
+  var $ = window.jQuery;
+
+  if (!web3 || !web3.currentProvider || web3.currentProvider.isMetaMask !== true || !web3.eth || !ethereum) {
+    return;
+  }
+
+  var ls = window.localStorage.getItem(constants_1.default.LS_SETTING);
+
+  if (ls !== null) {
+    var settings = JSON.parse(ls);
+
+    if (settings && settings.metamask && settings.metamask.dismiss) {
+      return;
+    }
+  }
+
+  function showLinkToast(account) {
+    utils_1.qs('#metaMaskAccountLink').textContent = account;
+    utils_1.qs('#metaMaskAccountLink').addEventListener('click', function (e) {
+      utils_1.qs('#searchInput').value = "creator:" + account;
+      search_1.search();
+      e.preventDefault();
+    });
+    $('#metaMaskAccountToast').toast('show');
+  }
+
+  var accounts = web3.eth.accounts;
+
+  if (accounts && accounts.length > 0) {
+    utils_1.qs('#metaMaskAuthorizeToast').remove();
+    showLinkToast(accounts[0]);
+  } else {
+    utils_1.qs('#metaMaskAuthorizeBtn').addEventListener('click', function () {
+      ethereum.enable().then(function (d) {
+        $('#metaMaskAuthorizeToast').on('hidden.bs.toast', function () {
+          showLinkToast(d[0]);
+        }).toast('hide');
+      });
+    });
+    $('#metaMaskAuthorizeToast').toast('show');
+  }
+
+  var dismiss = document.querySelectorAll('.toast .dismiss');
+  dismiss.forEach(function (d) {
+    d.addEventListener('click', function () {
+      window.localStorage.setItem(constants_1.default.LS_SETTING, JSON.stringify({
+        metamask: {
+          dismiss: true
+        }
+      }));
+    });
+  });
+}
+
+exports.default = default_1;
+},{"../utils/utils":"8wWJ","./search":"rZ55","../static/constants":"NOJ5"}],"ZCfc":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -1506,8 +1631,11 @@ var summary_1 = __importDefault(require("./components/summary"));
 
 var search_1 = __importDefault(require("./components/search"));
 
+var metamask_1 = __importDefault(require("./components/metamask"));
+
 summary_1.default();
 tag_1.default();
 search_1.default();
-},{"./components/tag":"tjhc","./components/summary":"SrDI","./components/search":"rZ55"}]},{},["ZCfc"], null)
-//# sourceMappingURL=/main.60cb5726.js.map
+metamask_1.default();
+},{"./components/tag":"tjhc","./components/summary":"SrDI","./components/search":"rZ55","./components/metamask":"pIsK"}]},{},["ZCfc"], null)
+//# sourceMappingURL=/main.7e82203e.js.map
