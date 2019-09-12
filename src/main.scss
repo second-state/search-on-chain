@@ -270,3 +270,18 @@ footer {
     width: 70px;
   }
 }
+
+.toast-wrapper {
+  position: absolute;
+  top: 0;
+  right: 1rem;
+  z-index: 5;
+  .toast-body {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .close {
+    font-size: 0.75rem;
+    font-weight: normal;
+  }
+}

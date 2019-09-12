@@ -21,6 +21,15 @@ export default {
     });
   },
 
+  searchDsl(dsl: object, cb: Function) {
+    es.queryUsingDsl(dsl).then((data) => {
+      cb(JSON.parse(data));
+    }).catch(e => {
+      console.log(e);
+      alert('Error occured.');
+    });
+  },
+
   searchKeywords(keywords: string, cb: Function) {
     es.searchUsingKeywords({keywords: [keywords]}).then((data) => {
       cb(JSON.parse(data));
