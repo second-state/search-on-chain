@@ -10,36 +10,30 @@ body {
 header {
   padding: 0 1rem !important;
   align-items: normal !important;
-  margin-top: 1rem;
+  margin-top: 2rem;
+  @media screen and (max-width: 791px) {
+    margin-top: 1rem;
+  }
 }
 
 h1 {
-  font-size: 1.6rem;
-  font-weight: bold;
-  // text-transform: uppercase;
-  letter-spacing: -2px;
   width: 120px;
-  font-family: Arial Black, Helvetica, sans-serif;
-  line-height: 0.8;
   margin: 0;
+  line-height: 0.8;
   img {
     width: 120px;
   }
-  // span {
-  //   font-size: 0.7rem;
-  //   font-weight: normal;
-  //   font-family: Arial, Helvetica, sans-serif;
-  //   letter-spacing: 0;
-  //   position: absolute;
-  //   margin-top: 7px;
-  //   color: #36fa99;
-  //   background-color: #000;
-  //   padding: 5px;
-  //   @media screen and (max-width: 791px) {
-  //     left: 130px;
-  //     margin-top: -18px;
-  //   }
-  // }
+  span {
+    font-size: 0.7rem;
+    font-weight: normal;
+    position: absolute;
+    top: -1rem;
+    left: 140px;
+    @media screen and (max-width: 791px) {
+      line-height: 1.6;
+      top: 0.3rem;
+    }
+  }
 }
 
 .entire-search {
