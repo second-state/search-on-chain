@@ -10,20 +10,34 @@ body {
 header {
   padding: 0 1rem !important;
   align-items: normal !important;
-  margin-top: 1rem;
+  margin-top: 2rem;
+}
+@media screen and (max-width: 791px) {
+  header {
+    margin-top: 1rem;
+  }
 }
 
 h1 {
-  font-size: 1.6rem;
-  font-weight: bold;
-  letter-spacing: -2px;
   width: 120px;
-  font-family: Arial Black, Helvetica, sans-serif;
-  line-height: 0.8;
   margin: 0;
+  line-height: 0.8;
 }
 h1 img {
   width: 120px;
+}
+h1 span {
+  font-size: 0.7rem;
+  font-weight: normal;
+  position: absolute;
+  top: -1rem;
+  left: 140px;
+}
+@media screen and (max-width: 791px) {
+  h1 span {
+    line-height: 1.6;
+    top: 0.3rem;
+  }
 }
 
 .entire-search {
@@ -257,4 +271,4 @@ footer .ss-figure {
   font-weight: normal;
 }
 
-/*# sourceMappingURL=/main.1148e6f3.css.map */
+/*# sourceMappingURL=/main.f3e71003.css.map */
