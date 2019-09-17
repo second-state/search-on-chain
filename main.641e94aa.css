@@ -26,17 +26,19 @@ h1 {
 h1 img {
   width: 120px;
 }
-h1 span {
-  font-size: 0.7rem;
-  font-weight: normal;
+
+.slogan {
   position: absolute;
-  top: -1rem;
+  font-size: 0.75rem;
+  width: 638px;
+  margin-bottom: 0.5rem;
   left: 140px;
+  top: -1.5rem;
 }
 @media screen and (max-width: 791px) {
-  h1 span {
-    line-height: 1.6;
-    top: 0.3rem;
+  .slogan {
+    position: static;
+    width: 100%;
   }
 }
 
@@ -154,11 +156,6 @@ h1 span {
   padding-bottom: 200px;
   margin-left: 0;
 }
-@media screen and (max-width: 768px) {
-  .main-content > .row {
-    flex-direction: column-reverse;
-  }
-}
 
 h4 {
   padding: 0.5rem 0;
@@ -191,14 +188,14 @@ h4 {
 .tags .tag .close-badge {
   display: none;
 }
-.tags .editing .tag.preserved {
+.tags .editing .tag.preserved, .tags.editing .tag.preserved {
   display: none;
 }
-.tags .editing .tag .count-badge {
+.tags .editing .tag .count-badge, .tags.editing .tag .count-badge {
   display: none;
 }
-.tags .editing .tag .close-badge {
-  display: inline;
+.tags .editing .tag .close-badge, .tags.editing .tag .close-badge {
+  display: inline-block;
   cursor: pointer;
 }
 .tags .btn {
@@ -213,6 +210,24 @@ h4 {
 .tags .add-tag > .btn:last-of-type {
   display: none;
   margin-left: 1rem;
+}
+.tags + .dapps {
+  margin-top: 1rem;
+}
+.tags + .dapps ul {
+  padding: 0;
+  list-style-position: inside;
+}
+@media screen and (max-width: 767px) {
+  .tags {
+    display: none;
+  }
+  .tags.mobile-tags {
+    display: block;
+  }
+  .tags + .dapps {
+    display: none;
+  }
 }
 
 footer {
@@ -258,7 +273,7 @@ footer .ss-figure {
 
 .toast-wrapper {
   position: absolute;
-  top: 0;
+  top: -1rem;
   right: 1rem;
   z-index: 5;
 }
@@ -271,4 +286,67 @@ footer .ss-figure {
   font-weight: normal;
 }
 
-/*# sourceMappingURL=/main.f3e71003.css.map */
+.mobile-menu {
+  display: none;
+}
+@media screen and (max-width: 767px) {
+  .mobile-menu {
+    display: block;
+    z-index: 10;
+  }
+}
+
+.mobile-back {
+  background-color: rgba(0, 0, 0, 0);
+  display: none;
+  height: 100%;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+}
+.mobile-back.show {
+  display: block;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.mobile-back.show + .mobile-side-nav {
+  transform: translateX(-300px);
+}
+
+.mobile-side-nav {
+  background-color: #fff;
+  height: 100%;
+  font-size: 16px;
+  outline: none;
+  overflow-y: scroll;
+  padding: 1rem 0;
+  position: fixed;
+  top: 0;
+  right: -300px;
+  transition: 0.5s;
+  width: 300px;
+}
+.mobile-side-nav dt {
+  margin-bottom: 1rem;
+  padding: 0 1rem;
+}
+.mobile-side-nav dd {
+  padding: 0.5rem 1rem 0.5rem 2rem;
+  margin: 0;
+}
+.mobile-side-nav dd.tag {
+  margin-bottom: 0;
+}
+.mobile-side-nav dd.tag.active {
+  background-color: rgba(23, 162, 184, 0.2);
+}
+.mobile-side-nav dd.tag .badge {
+  vertical-align: text-bottom;
+}
+.mobile-side-nav dd.a {
+  display: flex;
+  justify-content: space-around;
+}
+
+/*# sourceMappingURL=/main.641e94aa.css.map */

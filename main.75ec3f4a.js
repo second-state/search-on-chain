@@ -1160,7 +1160,32 @@ function () {
 }();
 
 exports.default = SearchResults;
-},{"../utils/utils":"8wWJ","../static/constants":"NOJ5","./pagination":"3SV9"}],"tjhc":[function(require,module,exports) {
+},{"../utils/utils":"8wWJ","../static/constants":"NOJ5","./pagination":"3SV9"}],"edXJ":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var utils_1 = require("../utils/utils");
+
+function default_1() {
+  utils_1.qs('#mobileMenuToggler').addEventListener('click', function () {
+    utils_1.qs('#mobileBack').classList.add('show');
+  });
+  utils_1.qs('#mobileBack').addEventListener('click', function () {
+    utils_1.qs('#mobileBack').classList.remove('show');
+  });
+}
+
+exports.default = default_1;
+
+function hideMobile() {
+  utils_1.qs('#mobileBack').classList.remove('show');
+}
+
+exports.hideMobile = hideMobile;
+},{"../utils/utils":"8wWJ"}],"tjhc":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -1185,6 +1210,8 @@ var es_1 = __importDefault(require("../utils/es"));
 
 var searchResults_1 = __importDefault(require("./searchResults"));
 
+var mobile_1 = require("./mobile");
+
 var Tag =
 /** @class */
 function () {
@@ -1201,31 +1228,61 @@ function () {
     div.innerHTML = html;
     this.dom = div.children[0];
     tags.appendChild(this.dom);
+    var tagsM = utils_1.qs('#mobileTags');
+    html = utils_1.renderTemplate({
+      name: this.name
+    }, Tag.TemplateM);
+    div.innerHTML = html;
+    this.domM = div.children[0];
+    tagsM.insertBefore(this.domM, tagsM.children[tagsM.children.length - 1]);
+
+    function activate() {
+      var _this = this;
+
+      Tag.ActiveTag && Tag.ActiveTag.deactivate();
+      this.activate();
+      searchResults_1.default.Instance && searchResults_1.default.Instance.clear();
+      es_1.default.searchAbi(this.abi, function (d) {
+        _this.count = d.length;
+        new searchResults_1.default(d);
+      });
+    }
+
     this.dom.querySelector('button').addEventListener('click', function () {
       if (_this.dom.querySelector('button').classList.contains('active')) {
         return;
       }
 
-      Tag.ActiveTag && Tag.ActiveTag.deactivate();
+      activate.call(_this);
+    });
+    this.domM.addEventListener('click', function () {
+      if (_this.domM.classList.contains('active') || _this.domM.getAttribute('disabled')) {
+        return;
+      }
 
-      _this.activate();
-
-      searchResults_1.default.Instance && searchResults_1.default.Instance.clear();
-      es_1.default.searchAbi(_this.abi, function (d) {
-        _this.count = d.length;
-        new searchResults_1.default(d);
-      });
+      activate.call(_this);
+      mobile_1.hideMobile();
     });
     this.dom.querySelector('.close-badge').addEventListener('click', function () {
       _this.removed = true;
 
       _this.dom.remove();
+
+      _this.domM.remove();
+    });
+    this.domM.querySelector('.close-badge').addEventListener('click', function () {
+      _this.removed = true;
+
+      _this.dom.remove();
+
+      _this.domM.remove();
     });
   }
 
   Object.defineProperty(Tag.prototype, "count", {
     set: function set(c) {
       this.dom.querySelector('.count-badge').textContent = c.toString();
+      this.domM.querySelector('.count-badge').textContent = c.toString();
     },
     enumerable: true,
     configurable: true
@@ -1233,24 +1290,29 @@ function () {
 
   Tag.prototype.preserve = function () {
     this.dom.classList.add('preserved');
+    this.domM.classList.add('preserved');
   };
 
   Tag.prototype.activate = function () {
     this.dom.querySelector('button').classList.add('active');
+    this.domM.classList.add('active');
     Tag.ActiveTag = this;
   };
 
   Tag.prototype.deactivate = function () {
     this.dom.querySelector('button').classList.remove('active');
+    this.domM.classList.remove('active');
     Tag.ActiveTag = null;
   };
 
   Tag.prototype.disable = function () {
     this.dom.querySelector('button').setAttribute('disabled', 'disabled');
+    this.domM.setAttribute('disabled', 'disabled');
   };
 
   Tag.prototype.enable = function () {
     this.dom.querySelector('button').removeAttribute('disabled');
+    this.domM.removeAttribute('disabled');
   };
 
   Tag.prototype.toJSON = function () {
@@ -1261,6 +1323,7 @@ function () {
   };
 
   Tag.Template = utils_1.qs('#tags').childNodes[1].textContent;
+  Tag.TemplateM = utils_1.qs('#mobileTags').childNodes[3].textContent;
   return Tag;
 }();
 
@@ -1291,6 +1354,7 @@ function default_1() {
 
     if (lt.length > 0) {
       utils_1.qs('#editTags').style.display = 'inline';
+      utils_1.qs('#mobileEditTags').style.display = 'inline';
     }
 
     lt.forEach(function (t) {
@@ -1303,11 +1367,14 @@ function default_1() {
   }
 
   var editing = false;
-  utils_1.qs('#editTags').addEventListener('click', function () {
+
+  function edit() {
     if (!editing) {
       this.textContent = 'Done';
       utils_1.qs('#tags').classList.add('editing');
+      utils_1.qs('#mobileTags').classList.add('editing');
       utils_1.qs('#addTag').setAttribute('disabled', 'disabled');
+      utils_1.qs('#mobileAddTag').setAttribute('disabled', 'disabled');
       lsTags.forEach(function (t) {
         t.disable();
       });
@@ -1315,7 +1382,9 @@ function default_1() {
     } else {
       this.textContent = 'Edit Tags';
       utils_1.qs('#tags').classList.remove('editing');
+      utils_1.qs('#mobileTags').classList.remove('editing');
       utils_1.qs('#addTag').removeAttribute('disabled');
+      utils_1.qs('#mobileAddTag').removeAttribute('disabled');
 
       for (var i = lsTags.length - 1; i >= 0; i--) {
         var t = lsTags[i];
@@ -1329,12 +1398,16 @@ function default_1() {
 
       if (lsTags.length === 0) {
         utils_1.qs('#editTags').style.display = 'none';
+        utils_1.qs('#mobileEditTags').style.display = 'none';
       }
 
       window.localStorage.setItem(constants_1.default.LS_NAME, JSON.stringify(lsTags));
       editing = false;
     }
-  });
+  }
+
+  utils_1.qs('#editTags').addEventListener('click', edit);
+  utils_1.qs('#mobileEditTags').addEventListener('click', edit);
   utils_1.qs('#submitTag').addEventListener('click', function () {
     var tagName = utils_1.qs('#tagName').value.trim();
     var abiStr = utils_1.qs('#tagAbi').value.trim();
@@ -1387,6 +1460,7 @@ function default_1() {
       lsTags.push(new Tag(tagName, abi));
       window.localStorage.setItem(constants_1.default.LS_NAME, JSON.stringify(lsTags));
       utils_1.qs('#editTags').style.display = 'inline';
+      utils_1.qs('#mobileEditTags').style.display = 'inline';
       utils_1.qs('#newTagModal form').reset();
       window.jQuery('#newTagModal').modal('hide');
     });
@@ -1394,7 +1468,7 @@ function default_1() {
 }
 
 exports.default = default_1;
-},{"../utils/utils":"8wWJ","../static/abis":"gqc0","../static/constants":"NOJ5","../utils/es":"xmoD","./searchResults":"7co4"}],"SrDI":[function(require,module,exports) {
+},{"../utils/utils":"8wWJ","../static/abis":"gqc0","../static/constants":"NOJ5","../utils/es":"xmoD","./searchResults":"7co4","./mobile":"edXJ"}],"SrDI":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -1633,9 +1707,12 @@ var search_1 = __importDefault(require("./components/search"));
 
 var metamask_1 = __importDefault(require("./components/metamask"));
 
+var mobile_1 = __importDefault(require("./components/mobile"));
+
 summary_1.default();
 tag_1.default();
 search_1.default();
 metamask_1.default();
-},{"./components/tag":"tjhc","./components/summary":"SrDI","./components/search":"rZ55","./components/metamask":"pIsK"}]},{},["ZCfc"], null)
-//# sourceMappingURL=/main.7e82203e.js.map
+mobile_1.default();
+},{"./components/tag":"tjhc","./components/summary":"SrDI","./components/search":"rZ55","./components/metamask":"pIsK","./components/mobile":"edXJ"}]},{},["ZCfc"], null)
+//# sourceMappingURL=/main.75ec3f4a.js.map
