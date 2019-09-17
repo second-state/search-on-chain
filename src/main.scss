@@ -23,16 +23,18 @@ h1 {
   img {
     width: 120px;
   }
-  span {
-    font-size: 0.7rem;
-    font-weight: normal;
-    position: absolute;
-    top: -1rem;
-    left: 140px;
-    @media screen and (max-width: 791px) {
-      line-height: 1.6;
-      top: 0.3rem;
-    }
+}
+
+.slogan {
+  position: absolute;
+  font-size: 0.75rem;
+  width: 638px;
+  margin-bottom: 0.5rem;
+  left: 140px;
+  top: -1.5rem;
+  @media screen and (max-width: 791px) {
+    position: static;
+    width: 100%;
   }
 }
 
@@ -153,11 +155,6 @@ h1 {
 .main-content {
   padding-bottom: 200px;
   margin-left: 0;
-  > .row {
-    @media screen and (max-width: 768px) {
-      flex-direction: column-reverse;
-    }
-  }
 }
 
 h4 {
@@ -192,7 +189,7 @@ h4 {
       display: none;
     }
   }
-  .editing {
+  .editing, &.editing {
     .tag {
       &.preserved {
         display: none;
@@ -201,7 +198,7 @@ h4 {
         display: none;
       }
       .close-badge {
-        display: inline;
+        display: inline-block;
         cursor: pointer;
       }
     }
@@ -217,6 +214,24 @@ h4 {
         display: none;
         margin-left: 1rem;
       }
+    }
+  }
+
+  + .dapps {
+    margin-top: 1rem;
+    ul {
+      padding: 0;
+      list-style-position: inside;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    display: none;
+    &.mobile-tags {
+      display: block;
+    }
+    + .dapps {
+      display: none;
     }
   }
 }
@@ -267,7 +282,7 @@ footer {
 
 .toast-wrapper {
   position: absolute;
-  top: 0;
+  top: -1rem;
   right: 1rem;
   z-index: 5;
   .toast-body {
@@ -277,5 +292,67 @@ footer {
   .close {
     font-size: 0.75rem;
     font-weight: normal;
+  }
+}
+
+.mobile-menu {
+  display: none;
+
+  @media screen and (max-width: 767px) {
+    display: block;
+    z-index: 10;
+  }
+}
+
+.mobile-back {
+  background-color: rgba(0,0,0,0);
+  display: none;
+  height: 100%;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  &.show {
+    display: block;
+    background-color: rgba(0, 0, 0, 0.5);
+    + .mobile-side-nav {
+      transform: translateX(-300px);
+    }
+  }
+}
+
+.mobile-side-nav {
+  background-color: #fff;
+  height: 100%;
+  font-size: 16px;
+  outline: none;
+  overflow-y: scroll;
+  padding: 1rem 0;
+  position: fixed;
+  top: 0;
+  right: -300px;
+  transition: 0.5s;
+  width: 300px;
+  dt {
+    margin-bottom: 1rem;
+    padding: 0 1rem;
+  }
+  dd {
+    padding: 0.5rem 1rem 0.5rem 2rem;
+    margin: 0;
+    &.tag {
+      margin-bottom: 0;
+      &.active {
+        background-color: adjust-color(#17a2b8, $alpha: -0.8);
+      }
+      .badge {
+        vertical-align: text-bottom;
+      }
+    }
+    &.a {
+      display: flex;
+      justify-content: space-around;
+    }
   }
 }

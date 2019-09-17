@@ -12,11 +12,39 @@
   <body>
     <header class="navbar">
       <h1>
-        <span>Ethereum Classic Smart Contracts Search Powered by Second State</span>
         <figure>
           <img src="assets/imgs/etcss.png" alt="ETC & SecondState" />
         </figure>
       </h1>
+      <div class="mobile-menu">
+        <div id="mobileMenuToggler">
+          <svg style="fill:#757575;width:24px;height:24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"> <path d="M0 0h24v24H0z" fill="none"></path> <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path> </svg>
+        </div>
+        <div id="mobileBack" class="mobile-back"></div>
+        <div id="mobileSideNav" class="mobile-side-nav">
+          <dl id="mobileTags" class="tags mobile-tags">
+            <dt>Tags</dt>
+            <!--
+              <dd class="tag" tag="{name}">{name}
+                <span class="badge badge-info count-badge"></span>
+                <span class="badge badge-light close-badge">&times;</span>
+              </dd>
+            -->
+            <dd class="a">
+              <button id="mobileAddTag" type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#newTagModal">Add Tag</button>
+              <button id="mobileEditTags" type="button" class="btn btn-sm btn-light">Edit Tags</button>
+            </dd>
+          </dl>
+          <dl>
+            <dt>Links</dt>
+            <dd><a href="https://github.com/second-state/es-ss.js" target="_blank">es-ss.js</a></dd>
+            <dd><a href="https://docs.secondstate.io/white-papers/google-for-smart-contracts" target="_blank">Google for smart contracts</a></dd>
+            <dd>Dapp - <a href="https://www.fairplaydapp.com" target="_blank">FairPlay</a></dd>
+            <dd>Dapp - <a href="https://www.openbay.io" target="_blank">OpenBay</a></dd>
+          </dl>
+        </div>
+      </div>
+      <div class="slogan">Ethereum Classic Smart Contracts Search Powered by Second State</div>
       <div class="entire-search">
         <div class="search-input">
           <div class="input-wrapper">
@@ -93,43 +121,53 @@
             <div class="add-tag">
               <button id="addTag" type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#newTagModal">Add Tag</button>
               <button id="editTags" type="button" class="btn btn-sm btn-light">Edit Tags</button>
-              <div class="modal fade" id="newTagModal" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title">New Tag</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div class="modal-body">
-                      <form>
-                        <div class="form-group">
-                          <label for="tagName" class="col-form-label">Tag Name:</label>
-                          <input type="text" class="form-control" id="tagName">
-                        </div>
-                        <div class="form-group">
-                          <label for="tagAbi" class="col-form-label">Abi:</label>
-                          <textarea class="form-control" id="tagAbi"></textarea>
-                        </div>
-                        <div class="form-group">
-                          <label for="tagTxHash" class="col-form-label">TxHash:</label>
-                          <input type="text" class="form-control" id="tagTxHash">
-                        </div>
-                      </form>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                      <button id="submitTag" type="button" class="btn btn-info">Submit Tag</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
+          </div>
+          <div class="dapps">
+            <h5>Links</h5>
+            <ul>
+              <li><a href="https://github.com/second-state/es-ss.js" target="_blank">es-ss.js</a></li>
+              <li><a href="https://docs.secondstate.io/white-papers/google-for-smart-contracts" target="_blank">Google for smart contracts</a></li>
+              <li>Dapp - <a href="https://www.fairplaydapp.com" target="_blank">FairPlay</a></li>
+              <li>Dapp - <a href="https://www.openbay.io" target="_blank">OpenBay</a></li>
+            </ul>
           </div>
         </div>
       </div>
     </div>
+
+    <div class="modal fade" id="newTagModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">New Tag</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group">
+                  <label for="tagName" class="col-form-label">Tag Name:</label>
+                  <input type="text" class="form-control" id="tagName">
+                </div>
+                <div class="form-group">
+                  <label for="tagAbi" class="col-form-label">Abi:</label>
+                  <textarea class="form-control" id="tagAbi"></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="tagTxHash" class="col-form-label">TxHash:</label>
+                  <input type="text" class="form-control" id="tagTxHash">
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button id="submitTag" type="button" class="btn btn-info">Submit Tag</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
     <div class="toast-wrapper">
       <div id="metaMaskAuthorizeToast" class="toast" data-autohide="false">
@@ -148,7 +186,7 @@
           to get account from MetaMask.
         </div>
       </div>
-      <div id="metaMaskAccountToast" class="toast" data-autohide="false">
+      <div id="metaMaskAccountToast" class="toast hide" data-autohide="false">
         <div class="toast-header">
           <strong class="mr-auto">MetaMask</strong>
           <button type="button" class="close dismiss" data-dismiss="toast" aria-label="Dismiss">
